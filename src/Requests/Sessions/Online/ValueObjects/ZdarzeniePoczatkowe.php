@@ -11,7 +11,7 @@ use N1ebieski\KSEFClient\Validator\Rules\String\MinRule;
 use N1ebieski\KSEFClient\Validator\Validator;
 use Stringable;
 
-final readonly class P_7 extends AbstractValueObject implements ValueAwareInterface, Stringable
+final readonly class ZdarzeniePoczatkowe extends AbstractValueObject implements ValueAwareInterface, Stringable
 {
     public string $value;
 
@@ -19,7 +19,7 @@ final readonly class P_7 extends AbstractValueObject implements ValueAwareInterf
     {
         Validator::validate($value, [
             new MinRule(1),
-            new MaxRule(512),
+            new MaxRule(256),
         ]);
 
         $this->value = $value;

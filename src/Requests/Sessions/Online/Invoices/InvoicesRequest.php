@@ -10,8 +10,6 @@ use N1ebieski\KSEFClient\Requests\AbstractRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\DTOs\Faktura;
 use N1ebieski\KSEFClient\Requests\ValueObjects\ReferenceNumber;
 use N1ebieski\KSEFClient\Support\Optional;
-use N1ebieski\KSEFClient\Support\ValueObjects\KeyType;
-use N1ebieski\KSEFClient\ValueObjects\EncryptionKey;
 
 final readonly class InvoicesRequest extends AbstractRequest implements XmlSerializableInterface, BodyInterface
 {

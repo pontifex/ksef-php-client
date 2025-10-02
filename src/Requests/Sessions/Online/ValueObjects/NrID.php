@@ -8,7 +8,6 @@ use N1ebieski\KSEFClient\Contracts\ValueAwareInterface;
 use N1ebieski\KSEFClient\Support\AbstractValueObject;
 use N1ebieski\KSEFClient\Validator\Rules\String\MaxRule;
 use N1ebieski\KSEFClient\Validator\Rules\String\MinRule;
-use N1ebieski\KSEFClient\Validator\Rules\String\RegexRule;
 use N1ebieski\KSEFClient\Validator\Validator;
 use Stringable;
 
@@ -21,7 +20,6 @@ final readonly class NrID extends AbstractValueObject implements ValueAwareInter
         Validator::validate($value, [
             new MinRule(1),
             new MaxRule(50),
-            new RegexRule('/[a-zA-Z0-9]{1,50}/'),
         ]);
 
         $this->value = $value;

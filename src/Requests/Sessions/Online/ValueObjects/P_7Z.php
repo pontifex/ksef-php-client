@@ -19,7 +19,7 @@ final readonly class P_7Z extends AbstractValueObject implements ValueAwareInter
     {
         Validator::validate($value, [
             new MinRule(1),
-            new MaxRule(256),
+            new MaxRule(512),
         ]);
 
         $this->value = $value;

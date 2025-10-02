@@ -6,9 +6,9 @@ namespace N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects;
 
 use N1ebieski\KSEFClient\Contracts\EnumInterface;
 
-enum ZnacznikZaplatyCzesciowej: string implements EnumInterface
+enum GV: string implements EnumInterface
 {
-    case Default = '1';
+    case Yes = '1';
 
-    case WCalosci = '2';
+    case No = '2';
 }

@@ -9,6 +9,8 @@ use N1ebieski\KSEFClient\Contracts\HttpClient\HttpClientInterface;
 use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
 use N1ebieski\KSEFClient\Contracts\Resources\Sessions\Online\OnlineResourceInterface;
 use N1ebieski\KSEFClient\DTOs\Config;
+use N1ebieski\KSEFClient\Requests\Sessions\Online\Close\CloseHandler;
+use N1ebieski\KSEFClient\Requests\Sessions\Online\Close\CloseRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\Invoices\InvoicesHandler;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\Invoices\InvoicesRequest;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\Open\OpenHandler;
@@ -32,6 +34,15 @@ final class OnlineResource extends AbstractResource implements OnlineResourceInt
         }
 
         return new OpenHandler($this->client)->handle($request);
+    }
+
+    public function close(CloseRequest | array $request): ResponseInterface
+    {
+        if ($request instanceof CloseRequest === false) {
+            $request = CloseRequest::from($request);
+        }
+
+        return new CloseHandler($this->client)->handle($request);
     }
 
     public function invoices(InvoicesRequest | array $request): ResponseInterface

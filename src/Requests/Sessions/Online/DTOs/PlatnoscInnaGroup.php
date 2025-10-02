@@ -14,7 +14,7 @@ final readonly class PlatnoscInnaGroup extends AbstractDTO implements DomSeriali
 {
     /**
      * @param PlatnoscInna $platnoscInna Znacznik innej formy płatności: 1 - inna forma płatności
-     * @param OpisPlatnosci $opisPlatnosci Opis płatnosci Doprecyzowanie innej formy płatnośc
+     * @param OpisPlatnosci $opisPlatnosci Opis płatnosci Doprecyzowanie innej formy płatności
      * @return void
      */
     public function __construct(

@@ -27,4 +27,6 @@ enum Rola: string implements EnumInterface
     case CzlonekGrupyVATWystawca = '9';
 
     case CzlonekGrupyVATOdbiorca = '10';
+
+    case Pracownik = '11';
 }

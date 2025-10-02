@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace N1ebieski\KSEFClient\Requests\Sessions\Online\DTOs;
 
 use DOMDocument;
+use DOMElement;
 use N1ebieski\KSEFClient\Contracts\DomSerializableInterface;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\DataZaplatyCzesciowej;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\KwotaZaplatyCzesciowej;
 use N1ebieski\KSEFClient\Support\AbstractDTO;
+use N1ebieski\KSEFClient\Support\Optional;
 
 final readonly class ZaplataCzesciowa extends AbstractDTO implements DomSerializableInterface
 {
@@ -17,7 +19,8 @@ final readonly class ZaplataCzesciowa extends AbstractDTO implements DomSerializ
      */
     public function __construct(
         public KwotaZaplatyCzesciowej $kwotaZaplatyCzesciowej,
-        public DataZaplatyCzesciowej $dataZaplatyCzesciowej
+        public DataZaplatyCzesciowej $dataZaplatyCzesciowej,
+        public Optional | FormaPlatnosciGroup | PlatnoscInnaGroup $platnoscGroup = new Optional(),
     ) {
     }
 
@@ -38,6 +41,15 @@ final readonly class ZaplataCzesciowa extends AbstractDTO implements DomSerializ
         $dataZaplatyCzesciowej->appendChild($dom->createTextNode((string) $this->dataZaplatyCzesciowej));
 
         $zaplataCzesciowa->appendChild($dataZaplatyCzesciowej);
+
+        if ( ! $this->platnoscGroup instanceof Optional) {
+            /** @var DOMElement $platnoscGroup */
+            $platnoscGroup = $this->platnoscGroup->toDom()->documentElement;
+
+            foreach ($platnoscGroup->childNodes as $child) {
+                $zaplataCzesciowa->appendChild($dom->importNode($child, true));
+            }
+        }
 
         return $dom;
     }

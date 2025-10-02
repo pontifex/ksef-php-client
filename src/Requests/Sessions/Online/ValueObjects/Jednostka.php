@@ -11,7 +11,7 @@ use N1ebieski\KSEFClient\Validator\Rules\String\MinRule;
 use N1ebieski\KSEFClient\Validator\Validator;
 use Stringable;
 
-final readonly class TerminOpis extends AbstractValueObject implements ValueAwareInterface, Stringable
+final readonly class Jednostka extends AbstractValueObject implements ValueAwareInterface, Stringable
 {
     public string $value;
 
@@ -19,7 +19,7 @@ final readonly class TerminOpis extends AbstractValueObject implements ValueAwar
     {
         Validator::validate($value, [
             new MinRule(1),
-            new MaxRule(256),
+            new MaxRule(50),
         ]);
 
         $this->value = $value;

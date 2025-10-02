@@ -6,7 +6,8 @@ namespace N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects;
 
 use N1ebieski\KSEFClient\Contracts\ValueAwareInterface;
 use N1ebieski\KSEFClient\Support\AbstractValueObject;
-use N1ebieski\KSEFClient\Validator\Rules\String\RegexRule;
+use N1ebieski\KSEFClient\Validator\Rules\String\MaxRule;
+use N1ebieski\KSEFClient\Validator\Rules\String\MinRule;
 use N1ebieski\KSEFClient\Validator\Validator;
 use Stringable;
 
@@ -17,7 +18,8 @@ final readonly class NrRB extends AbstractValueObject implements ValueAwareInter
     public function __construct(string $value)
     {
         Validator::validate($value, [
-            new RegexRule('/[0-9A-Z]{10,32}/'),
+            new MinRule(10),
+            new MaxRule(34),
         ]);
 
         $this->value = $value;

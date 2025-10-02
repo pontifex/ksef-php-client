@@ -7,18 +7,17 @@ namespace N1ebieski\KSEFClient\Requests\Sessions\Online\DTOs;
 use DOMDocument;
 use N1ebieski\KSEFClient\Contracts\DomSerializableInterface;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\Termin;
-use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\TerminOpis;
 use N1ebieski\KSEFClient\Support\AbstractDTO;
 use N1ebieski\KSEFClient\Support\Optional;
 
 final readonly class TerminPlatnosci extends AbstractDTO implements DomSerializableInterface
 {
     /**
-     * @param Termin $termin Termin płatności
+     * @param Optional|Termin $termin Termin płatności
      * @param Optional|TerminOpis $terminOpis Opis terminu płatności
      */
     public function __construct(
-        public Termin $termin,
+        public Optional | Termin $termin = new Optional(),
         public Optional | TerminOpis $terminOpis = new Optional(),
     ) {
     }
@@ -31,14 +30,15 @@ final readonly class TerminPlatnosci extends AbstractDTO implements DomSerializa
         $terminPlatnosci = $dom->createElement('TerminPlatnosci');
         $dom->appendChild($terminPlatnosci);
 
-        $termin = $dom->createElement('Termin');
-        $termin->appendChild($dom->createTextNode((string) $this->termin));
+        if ($this->termin instanceof Termin) {
+            $termin = $dom->createElement('Termin');
+            $termin->appendChild($dom->createTextNode((string) $this->termin));
 
-        $terminPlatnosci->appendChild($termin);
+            $terminPlatnosci->appendChild($termin);
+        }
 
         if ($this->terminOpis instanceof TerminOpis) {
-            $terminOpis = $dom->createElement('TerminOpis');
-            $terminOpis->appendChild($dom->createTextNode((string) $this->terminOpis));
+            $terminOpis = $dom->importNode($this->terminOpis->toDom()->documentElement, true);
 
             $terminPlatnosci->appendChild($terminOpis);
         }

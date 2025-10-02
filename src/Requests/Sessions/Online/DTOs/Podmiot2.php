@@ -6,7 +6,9 @@ namespace N1ebieski\KSEFClient\Requests\Sessions\Online\DTOs;
 
 use DOMDocument;
 use N1ebieski\KSEFClient\Contracts\DomSerializableInterface;
+use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\GV;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\IDNabywcy;
+use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\JST;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\NrEORI;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\NrKlienta;
 use N1ebieski\KSEFClient\Support\AbstractDTO;
@@ -28,10 +30,14 @@ final readonly class Podmiot2 extends AbstractDTO implements DomSerializableInte
      * @param Optional|NrKlienta $nrKlienta Numer klienta dla przypadków, w których nabywca posługuje się nim w umowie lub zamówieniu
      * @param NrEORI|Optional $nrEORI Numer EORI podatnika (nabywcy)
      * @param IDNabywcy|Optional $idNabywcy Unikalny klucz powiązania danych nabywcy na fakturach korygujących, w przypadku gdy dane nabywcy na fakturze korygującej zmieniły się w stosunku do danych na fakturze korygowanej
+     * @param JST Znacznik jednostki podrzędnej JST. Wartość "1" oznacza, że faktura dotyczy jednostki podrzędnej JST. W takim przypadku, aby udostępnić fakturę jednostce podrzędnej JST, należy wypełnić sekcję Podmiot3, w szczególności podać NIP lub ID-Wew i określić rolę jako 8. Wartość "2" oznacza, że faktura nie dotyczy jednostki podrzędnej JST
+     * @param GV Znacznik członka grupy VAT. Wartość "1" oznacza, że faktura dotyczy członka grupy VAT. W takim przypadku, aby udostępnić fakturę członkowi grupy VAT, należy wypełnić sekcję Podmiot3, w szczególności podać NIP lub ID-Wew i określić rolę jako 10. Wartość "2" oznacza, że faktura nie dotyczy członka grupy VAT
      * @return void
      */
     public function __construct(
         public Podmiot2DaneIdentyfikacyjne $daneIdentyfikacyjne,
+        public JST $jst = JST::No,
+        public GV $gv = GV::No,
         public Optional | NrEORI $nrEORI = new Optional(),
         public Optional | Adres $adres = new Optional(),
         public Optional | AdresKoresp $adresKoresp = new Optional(),
@@ -99,6 +105,16 @@ final readonly class Podmiot2 extends AbstractDTO implements DomSerializableInte
 
             $podmiot2->appendChild($idNabywcy);
         }
+
+        $jst = $dom->createElement('JST');
+        $jst->appendChild($dom->createTextNode((string) $this->jst->value));
+
+        $podmiot2->appendChild($jst);
+
+        $gv = $dom->createElement('GV');
+        $gv->appendChild($dom->createTextNode((string) $this->gv->value));
+
+        $podmiot2->appendChild($gv);
 
         return $dom;
     }

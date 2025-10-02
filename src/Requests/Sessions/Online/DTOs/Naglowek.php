@@ -9,7 +9,7 @@ use DOMDocument;
 use N1ebieski\KSEFClient\Contracts\DomSerializableInterface;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\DataWytworzeniaFa;
 use N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects\SystemInfo;
-use N1ebieski\KSEFClient\Requests\Online\ValueObjects\SystemCode;
+use N1ebieski\KSEFClient\Requests\Sessions\ValueObjects\FormCode;
 use N1ebieski\KSEFClient\Support\AbstractDTO;
 use N1ebieski\KSEFClient\Support\Optional;
 
@@ -20,7 +20,7 @@ final readonly class Naglowek extends AbstractDTO implements DomSerializableInte
      * @return void
      */
     public function __construct(
-        public SystemCode $wariantFormularza = SystemCode::Fa2,
+        public FormCode $wariantFormularza = FormCode::Fa3,
         public DataWytworzeniaFa $dataWytworzeniaFa = new DataWytworzeniaFa(new DateTimeImmutable()),
         public Optional | SystemInfo $systemInfo = new Optional(),
     ) {

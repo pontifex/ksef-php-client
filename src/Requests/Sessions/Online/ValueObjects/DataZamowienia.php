@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace N1ebieski\KSEFClient\Requests\Sessions\Online\ValueObjects;
 
-use DateTimeInterface;
 use DateTimeImmutable;
+use DateTimeInterface;
 use N1ebieski\KSEFClient\Contracts\ValueAwareInterface;
 use N1ebieski\KSEFClient\Support\AbstractValueObject;
 use N1ebieski\KSEFClient\Validator\Rules\Date\AfterRule;
@@ -25,7 +25,7 @@ final readonly class DataZamowienia extends AbstractValueObject implements Value
 
         Validator::validate($value, [
             new BeforeRule(new DateTimeImmutable('2050-01-01')),
-            new AfterRule(new DateTimeImmutable('2016-07-01')),
+            new AfterRule(new DateTimeImmutable('1990-01-01')),
         ]);
 
         $this->value = $value;

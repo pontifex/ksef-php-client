@@ -25,7 +25,7 @@ final readonly class DataUmowy extends AbstractValueObject implements ValueAware
 
         Validator::validate($value, [
             new BeforeRule(new DateTimeImmutable('2050-01-01')),
-            new AfterRule(new DateTimeImmutable('2016-07-01')),
+            new AfterRule(new DateTimeImmutable('1990-01-01')),
         ]);
 
         $this->value = $value;

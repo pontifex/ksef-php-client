@@ -22,7 +22,7 @@ final readonly class ZaplataCzesciowaGroup extends AbstractDTO implements DomSer
 
     /**
      * @param Optional|array<int, ZaplataCzesciowa> $zaplataCzesciowa Dane zapłat częściowych
-     * @param ZnacznikZaplatyCzesciowej $znacznikZaplatyCzesciowej Znacznik informujący, że kwota należności wynikająca z faktury została zapłacona w części: 1 - zapłacono w części
+     * @param ZnacznikZaplatyCzesciowej $znacznikZaplatyCzesciowej Znacznik informujący, że należność wynikająca z faktury została zapłacona w części lub w całości: 1 - zapłacono w części; 2 - zapłacono w całości, jeśli należność wynikająca z faktury została zapłacona w dwóch lub więcej częściach, a ostatnia płatność jest płatnością końcową
      */
     public function __construct(
         Optional | array $zaplataCzesciowa = new Optional(),
