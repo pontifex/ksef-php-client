@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace N1ebieski\KSEFClient\Factories;
 
+use DateTime;
 use DateTimeInterface;
 use N1ebieski\KSEFClient\Requests\Auth\ValueObjects\EncryptedToken;
 use N1ebieski\KSEFClient\ValueObjects\KsefPublicKey;
@@ -23,7 +24,8 @@ final readonly class EncryptedTokenFactory extends AbstractFactory
         DateTimeInterface $timestamp,
         KsefPublicKey $ksefPublicKey,
     ): EncryptedToken {
-        $timestampAsMiliseconds = $timestamp->getTimestamp() * 1000;
+        $secondsWithMicro = (float) $timestamp->format('U.u');
+        $timestampAsMiliseconds = (int) floor($secondsWithMicro * 1000);
 
         $data = "{$ksefToken->value}|{$timestampAsMiliseconds}";
 
