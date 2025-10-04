@@ -9,10 +9,24 @@ use N1ebieski\KSEFClient\Testing\AbstractTestCase;
 use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Auth\Token\Refresh\RefreshResponseFixture;
 use N1ebieski\KSEFClient\ValueObjects\AccessToken;
 use N1ebieski\KSEFClient\ValueObjects\RefreshToken;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class ClientResourceTest extends AbstractTestCase
 {
-    public function testAutoAccessTokenRefresh(): void
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function resourceProvider(): array
+    {
+        return [
+            ['sessions'],
+            ['certificates'],
+            ['tokens']
+        ];
+    }
+
+    #[DataProvider('resourceProvider')]
+    public function testAutoAccessTokenRefresh(string $resource): void
     {
         $responseFixture = new RefreshResponseFixture()->withValidUntil(new DateTimeImmutable('+15 minutes'));
 
@@ -23,7 +37,7 @@ final class ClientResourceTest extends AbstractTestCase
             ->withAccessToken($accessToken)
             ->withRefreshToken($refreshToken);
 
-        $clientStub->sessions();
+        $clientStub->{$resource}();
 
         $newAccessToken = $clientStub->getAccessToken();
 
@@ -32,7 +46,8 @@ final class ClientResourceTest extends AbstractTestCase
         $this->assertTrue($newAccessToken->isEquals($responseFixture->getAccessToken()));
     }
 
-    public function testThrowExceptionIfAccessTokenIsExpired(): void
+    #[DataProvider('resourceProvider')]
+    public function testThrowExceptionIfAccessTokenIsExpired(string $resource): void
     {
         $accessToken = new AccessToken('access-token', new DateTimeImmutable('-15 minutes'));
 
@@ -42,6 +57,6 @@ final class ClientResourceTest extends AbstractTestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Access token and refresh token are expired.');
 
-        $clientStub->sessions();
+        $clientStub->{$resource}();
     }
 }
