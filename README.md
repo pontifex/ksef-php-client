@@ -507,9 +507,7 @@ $response = $client->testdata()->person()->remove(
 ## Examples
 
 <details>
-<summary>Generate a KSEF certificate and convert to .p12 file</summary>
-
-### Generate a KSEF certificate and convert to .p12 file
+<summary><h3>Generate a KSEF certificate and convert to .p12 file</h3></summary>
 
 ```php
 use N1ebieski\KSEFClient\Actions\ConvertDerToPem\ConvertDerToPemAction;
