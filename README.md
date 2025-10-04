@@ -506,6 +506,9 @@ $response = $client->testdata()->person()->remove(
 
 ## Examples
 
+<details>
+<summary>Generate a KSEF certificate and convert to .p12 file</summary>
+
 ### Generate a KSEF certificate and convert to .p12 file
 
 ```php
@@ -580,6 +583,7 @@ $certificateToPkcs12 = new ConvertCertificateToPkcs12Handler()->handle(
 
 file_put_contents(Utility::basePath('config/certificates/ksef-certificate.p12'), $certificateToPkcs12);
 ```
+</details>
 
 ### Send an invoice and check for UPO
 
