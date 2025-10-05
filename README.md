@@ -630,7 +630,7 @@ use N1ebieski\KSEFClient\ValueObjects\PrivateKeyType;
 
 $client = new ClientBuilder()
     ->withIdentifier('NIP_NUMBER')
-    // To generate the KSEF certificate, you must authorize the qualified certificate the first time
+    // To generate the KSEF certificate, you have to authorize the qualified certificate the first time
     ->withCertificatePath($_ENV['PATH_TO_CERTIFICATE'], $_ENV['CERTIFICATE_PASSPHRASE'])
     ->build();
 
