@@ -4,14 +4,24 @@ declare(strict_types=1);
 
 namespace N1ebieski\KSEFClient\ValueObjects;
 
+use N1ebieski\KSEFClient\Contracts\FromInterface;
 use N1ebieski\KSEFClient\Contracts\ValueAwareInterface;
 use N1ebieski\KSEFClient\Support\AbstractValueObject;
+use N1ebieski\KSEFClient\Validator\Rules\String\RegexRule;
+use N1ebieski\KSEFClient\Validator\Validator;
 use Stringable;
 
-final readonly class NIP extends AbstractValueObject implements ValueAwareInterface, Stringable
+final readonly class NIP extends AbstractValueObject implements FromInterface, Stringable, ValueAwareInterface
 {
-    public function __construct(public string $value)
+    public string $value;
+
+    public function __construct(string $value)
     {
+        Validator::validate($value, [
+            new RegexRule('/[1-9]((\\d[1-9])|([1-9]\\d))\\d{7}/'),
+        ]);
+
+        $this->value = $value;
     }
 
     public function __toString(): string
@@ -22,5 +32,10 @@ final readonly class NIP extends AbstractValueObject implements ValueAwareInterf
     public static function from(string $value): self
     {
         return new self($value);
+    }
+
+    public function getType(): string
+    {
+        return 'Nip';
     }
 }

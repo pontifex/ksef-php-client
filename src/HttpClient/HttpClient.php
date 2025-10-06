@@ -7,10 +7,10 @@ namespace N1ebieski\KSEFClient\HttpClient;
 use Http\Discovery\Psr17Factory;
 use N1ebieski\KSEFClient\Contracts\HttpClient\HttpClientInterface;
 use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
-use N1ebieski\KSEFClient\Exception\ExceptionHandler;
-use N1ebieski\KSEFClient\HttpClient\DTOs\Config;
-use N1ebieski\KSEFClient\HttpClient\DTOs\Request;
-use N1ebieski\KSEFClient\HttpClient\ValueObjects\SessionToken;
+use N1ebieski\KSEFClient\DTOs\Config;
+use N1ebieski\KSEFClient\DTOs\HttpClient\Request;
+use N1ebieski\KSEFClient\Exceptions\ExceptionHandler;
+use N1ebieski\KSEFClient\ValueObjects\AccessToken;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 
@@ -23,16 +23,11 @@ final readonly class HttpClient implements HttpClientInterface
     ) {
     }
 
-    public function getSessionToken(): ?SessionToken
-    {
-        return $this->config->sessionToken;
-    }
-
-    public function withSessionToken(SessionToken $sessionToken): self
+    public function withAccessToken(AccessToken $accessToken): self
     {
         return new self(
             client: $this->client,
-            config: $this->config->withSessionToken($sessionToken),
+            config: $this->config->withAccessToken($accessToken),
             logger: $this->logger
         );
     }
@@ -43,8 +38,8 @@ final readonly class HttpClient implements HttpClientInterface
 
         $request = $request->withUri($request->uri->withBaseUrl($this->config->baseUri)->withoutSlashAtEnd());
 
-        if ($this->config->sessionToken instanceof SessionToken) {
-            $request = $request->withHeader('SessionToken', $this->config->sessionToken->value);
+        if ($this->config->accessToken instanceof AccessToken) {
+            $request = $request->withHeader('Authorization', "Bearer {$this->config->accessToken->token}");
         }
 
         $clientRequest = $psr17Factory->createRequest(

@@ -14,7 +14,7 @@ final readonly class ApiUrl extends AbstractValueObject implements ValueAwareInt
 
     public function __construct(Url | string $value)
     {
-        if ($value instanceof Url == false) {
+        if ($value instanceof Url === false) {
             $value = Url::from($value);
         }
 

@@ -4,17 +4,38 @@ declare(strict_types=1);
 
 namespace N1ebieski\KSEFClient\Contracts\Resources;
 
-use N1ebieski\KSEFClient\Contracts\Resources\Common\CommonResourceInterface;
-use N1ebieski\KSEFClient\Contracts\Resources\Online\OnlineResourceInterface;
-use N1ebieski\KSEFClient\HttpClient\ValueObjects\SessionToken;
+use DateTimeInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\Auth\AuthResourceInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\Certificates\CertificatesResourceInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\Invoices\InvoicesResourceInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\Security\SecurityResourceInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\Sessions\SessionsResourceInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\Testdata\TestdataResourceInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\Tokens\TokensResourceInterface;
+use N1ebieski\KSEFClient\ValueObjects\AccessToken;
+use N1ebieski\KSEFClient\ValueObjects\RefreshToken;
 
 interface ClientResourceInterface
 {
-    public function getSessionToken(): ?SessionToken;
+    public function getAccessToken(): ?AccessToken;
 
-    public function withSessionToken(SessionToken | string $sessionToken): self;
+    public function getRefreshToken(): ?RefreshToken;
 
-    public function online(): OnlineResourceInterface;
+    public function withAccessToken(AccessToken | string $accessToken, DateTimeInterface | string | null $validUntil = null): self;
 
-    public function common(): CommonResourceInterface;
+    public function withRefreshToken(RefreshToken | string $refreshToken, DateTimeInterface | string | null $validUntil = null): self;
+
+    public function auth(): AuthResourceInterface;
+
+    public function security(): SecurityResourceInterface;
+
+    public function sessions(): SessionsResourceInterface;
+
+    public function invoices(): InvoicesResourceInterface;
+
+    public function certificates(): CertificatesResourceInterface;
+
+    public function tokens(): TokensResourceInterface;
+
+    public function testdata(): TestdataResourceInterface;
 }

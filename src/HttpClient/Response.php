@@ -6,8 +6,9 @@ namespace N1ebieski\KSEFClient\HttpClient;
 
 use N1ebieski\KSEFClient\Contracts\Exception\ExceptionHandlerInterface;
 use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
-use N1ebieski\KSEFClient\HttpClient\Factories\ExceptionFactory;
-use N1ebieski\KSEFClient\Support\ValueObjects\KeyType;
+use N1ebieski\KSEFClient\Factories\ExceptionFactory;
+use N1ebieski\KSEFClient\Support\Arr;
+use N1ebieski\KSEFClient\ValueObjects\Support\KeyType;
 use Psr\Http\Message\ResponseInterface as BaseResponseInterface;
 
 final readonly class Response implements ResponseInterface
@@ -32,9 +33,11 @@ final readonly class Response implements ResponseInterface
             return;
         }
 
+        $exceptionResponse = $this->contents === '' ? null : $this->object();
+
         $this->exceptionHandler->handle(
             //@phpstan-ignore-next-line
-            ExceptionFactory::make($this->statusCode, $this->object())
+            ExceptionFactory::make($this->statusCode, $exceptionResponse)
         );
     }
 
@@ -48,9 +51,9 @@ final readonly class Response implements ResponseInterface
         return $this->contents;
     }
 
-    public function object(): object
+    public function object(): object | array
     {
-        /** @var object */
+        /** @var object|array<string, mixed> */
         return json_decode($this->contents, flags: JSON_THROW_ON_ERROR);
     }
 
@@ -60,11 +63,12 @@ final readonly class Response implements ResponseInterface
         return json_decode($this->contents, true, flags: JSON_THROW_ON_ERROR);
     }
 
-    public function toArray(KeyType $keyType = KeyType::Camel): array
+    public function toArray(KeyType $keyType = KeyType::Camel, array $only = []): array
     {
-        return [
-            'status' => $this->statusCode,
+        /** @var array<string, mixed> */
+        return Arr::normalize([
+            'statusCode' => $this->statusCode,
             'contents' => $this->contents,
-        ];
+        ], $keyType, $only);
     }
 }

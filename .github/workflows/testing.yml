@@ -1,6 +1,7 @@
 name: Testing
  
 on:
+  workflow_dispatch:
   push:
     branches:
       - "main"
@@ -39,25 +40,11 @@ jobs:
           extensions: json, dom, curl, libxml, mbstring
           coverage: none
 
-      - name: Setup KSEFPublicKey
-        run: |
-          mkdir -p ./config/keys
-          echo "${{ secrets.KSEF_PUBLIC_KEY }}" > ./config/keys/testPublicKey.pem
-
-      - name: Setup Certificate
-        run: |
-          mkdir -p ./scripts
-          mkdir -p ./config/certificates
-          echo "${{ vars.SIGNATURE_NIP }}" > ./scripts/signature-nip.txt
-          openssl req -newkey rsa:2048 -nodes -keyout "./config/certificates/key.pem" -out "./config/certificates/certificate.csr" -config ./scripts/signature-nip.txt
-          openssl x509 -req -in "./config/certificates/certificate.csr" -signkey "./config/certificates/key.pem" -out "./config/certificates/certificate.crt"
-          openssl pkcs12 -export -out "./config/certificates/certificate.p12" -inkey "./config/certificates/key.pem" -in "./config/certificates/certificate.crt" -passout pass:password
-
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run CS Fixer
-        run: PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer fix --dry-run
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --allow-unsupported-php-version=yes
 
       - name: Run Rector
         run: ./vendor/bin/rector process --dry-run
@@ -65,5 +52,5 @@ jobs:
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyse --error-format=github 
 
-      - name: Run PHPUnit
-        run: ./vendor/bin/phpunit
+      - name: Run Pest
+        run: ./vendor/bin/pest --parallel --ci

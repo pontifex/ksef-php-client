@@ -43,7 +43,7 @@ final class CamelCaseKeysWithExcept implements IteratorAggregate
             }
 
             if ( ! is_string($key)) {
-                $result[$key] = $value;
+                $result[$key] = $value; //@phpstan-ignore-line
                 continue;
             }
 

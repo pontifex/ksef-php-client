@@ -5,38 +5,46 @@ declare(strict_types=1);
 namespace N1ebieski\KSEFClient;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use Http\Discovery\Psr18ClientDiscovery;
 use InvalidArgumentException;
+use N1ebieski\KSEFClient\Actions\ConvertDerToPem\ConvertDerToPemAction;
+use N1ebieski\KSEFClient\Actions\ConvertDerToPem\ConvertDerToPemHandler;
+use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\ClientResourceInterface;
 use N1ebieski\KSEFClient\DTOs\Config;
+use N1ebieski\KSEFClient\DTOs\Requests\Auth\ContextIdentifierGroup;
+use N1ebieski\KSEFClient\DTOs\Requests\Auth\XadesSignature;
+use N1ebieski\KSEFClient\Factories\EncryptedTokenFactory;
 use N1ebieski\KSEFClient\Factories\LoggerFactory;
-use N1ebieski\KSEFClient\HttpClient\DTOs\Config as HttpClientConfig;
 use N1ebieski\KSEFClient\HttpClient\HttpClient;
-use N1ebieski\KSEFClient\HttpClient\ValueObjects\BaseUri;
-use N1ebieski\KSEFClient\HttpClient\ValueObjects\SessionToken;
-use N1ebieski\KSEFClient\Requests\DTOs\SubjectIdentifierBy;
-use N1ebieski\KSEFClient\Requests\DTOs\SubjectIdentifierByCompanyGroup;
-use N1ebieski\KSEFClient\Requests\Online\Session\AuthorisationChallenge\AuthorisationChallengeRequest;
-use N1ebieski\KSEFClient\Requests\Online\Session\DTOs\InitSessionSigned;
-use N1ebieski\KSEFClient\Requests\Online\Session\DTOs\InitSessionToken;
-use N1ebieski\KSEFClient\Requests\Online\Session\InitSigned\InitSignedRequest;
-use N1ebieski\KSEFClient\Requests\Online\Session\InitToken\InitTokenRequest;
-use N1ebieski\KSEFClient\Requests\Online\Session\ValueObjects\Challenge;
-use N1ebieski\KSEFClient\Requests\ValueObjects\SubjectIdentifierByCompany;
+use N1ebieski\KSEFClient\Requests\Auth\KsefToken\KsefTokenRequest;
+use N1ebieski\KSEFClient\Requests\Auth\Status\StatusRequest;
+use N1ebieski\KSEFClient\Requests\Auth\XadesSignature\XadesSignatureRequest;
 use N1ebieski\KSEFClient\Resources\ClientResource;
-use N1ebieski\KSEFClient\Validator\Rules\String\MaxBytesRule;
-use N1ebieski\KSEFClient\Validator\Rules\String\MinBytesRule;
-use N1ebieski\KSEFClient\Validator\Validator;
-use N1ebieski\KSEFClient\ValueObjects\ApiToken;
+use N1ebieski\KSEFClient\Support\Utility;
+use N1ebieski\KSEFClient\ValueObjects\AccessToken;
 use N1ebieski\KSEFClient\ValueObjects\ApiUrl;
 use N1ebieski\KSEFClient\ValueObjects\CertificatePath;
 use N1ebieski\KSEFClient\ValueObjects\EncryptionKey;
-use N1ebieski\KSEFClient\ValueObjects\KSEFPublicKeyPath;
+use N1ebieski\KSEFClient\ValueObjects\HttpClient\BaseUri;
+use N1ebieski\KSEFClient\ValueObjects\InternalId;
+use N1ebieski\KSEFClient\ValueObjects\KsefPublicKey;
+use N1ebieski\KSEFClient\ValueObjects\KsefToken;
 use N1ebieski\KSEFClient\ValueObjects\LogPath;
 use N1ebieski\KSEFClient\ValueObjects\Mode;
 use N1ebieski\KSEFClient\ValueObjects\NIP;
+use N1ebieski\KSEFClient\ValueObjects\NipVatUe;
+use N1ebieski\KSEFClient\ValueObjects\PeppolId;
+use N1ebieski\KSEFClient\ValueObjects\RefreshToken;
+use N1ebieski\KSEFClient\ValueObjects\Requests\Auth\Challenge;
+use N1ebieski\KSEFClient\ValueObjects\Requests\Auth\SubjectIdentifierType;
+use N1ebieski\KSEFClient\ValueObjects\Requests\ReferenceNumber;
+use N1ebieski\KSEFClient\ValueObjects\Requests\Security\PublicKeyCertificates\PublicKeyCertificateUsage;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use RuntimeException;
 
 final class ClientBuilder
 {
@@ -48,15 +56,15 @@ final class ClientBuilder
 
     private ApiUrl $apiUrl;
 
-    private ?ApiToken $apiToken = null;
+    private ?KsefToken $ksefToken = null;
 
-    private ?SessionToken $sessionToken = null;
+    private ?AccessToken $accessToken = null;
+
+    private ?RefreshToken $refreshToken = null;
 
     private ?CertificatePath $certificatePath = null;
 
-    private NIP $nip;
-
-    private ?KSEFPublicKeyPath $ksefPublicKeyPath = null;
+    private NIP | NipVatUe | InternalId | PeppolId $identifier;
 
     private ?EncryptionKey $encryptionKey = null;
 
@@ -78,11 +86,12 @@ final class ClientBuilder
         $this->apiUrl = $this->mode->getApiUrl();
 
         if ($this->mode->isEquals(Mode::Test)) {
-            $this->nip = new NIP('1111111111');
+            $this->identifier = new NIP('1111111111');
         }
 
         return $this;
     }
+
 
     public function withEncryptionKey(EncryptionKey | string $encryptionKey, ?string $iv = null): self
     {
@@ -90,15 +99,6 @@ final class ClientBuilder
             if ($iv === null) {
                 throw new InvalidArgumentException('IV is required when key is string.');
             }
-
-            // TODO: Move this to EncrypionKey construct
-            Validator::validate([
-                'key' => $encryptionKey,
-                'iv' => $iv
-            ], [
-                'key' => [new MinBytesRule(32), new MaxBytesRule(32)],
-                'iv' => [new MinBytesRule(16), new MaxBytesRule(16)]
-            ]);
 
             $encryptionKey = new EncryptionKey($encryptionKey, $iv);
         }
@@ -119,29 +119,45 @@ final class ClientBuilder
         return $this;
     }
 
-    public function withApiToken(ApiToken | string $apiToken): self
+    public function withKsefToken(KsefToken | string $ksefToken): self
     {
-        if ($apiToken instanceof ApiToken === false) {
-            $apiToken = ApiToken::from($apiToken);
+        if ($ksefToken instanceof KsefToken === false) {
+            $ksefToken = KsefToken::from($ksefToken);
         }
 
         $this->certificatePath = null;
 
-        $this->apiToken = $apiToken;
+        $this->ksefToken = $ksefToken;
 
         return $this;
     }
 
-    public function withSessionToken(SessionToken | string $sessionToken): self
+    public function withAccessToken(AccessToken | string $accessToken, DateTimeInterface | string | null $validUntil = null): self
     {
-        if ($sessionToken instanceof SessionToken === false) {
-            $sessionToken = SessionToken::from($sessionToken);
+        if ($accessToken instanceof AccessToken === false) {
+            if (is_string($validUntil)) {
+                $validUntil = new DateTimeImmutable($validUntil);
+            }
+
+            $accessToken = AccessToken::from($accessToken, $validUntil);
         }
 
-        $this->certificatePath = null;
-        $this->apiToken = null;
+        $this->accessToken = $accessToken;
 
-        $this->sessionToken = $sessionToken;
+        return $this;
+    }
+
+    public function withRefreshToken(RefreshToken | string $refreshToken, DateTimeInterface | string | null $validUntil = null): self
+    {
+        if ($refreshToken instanceof RefreshToken === false) {
+            if (is_string($validUntil)) {
+                $validUntil = new DateTimeImmutable($validUntil);
+            }
+
+            $refreshToken = RefreshToken::from($refreshToken, $validUntil);
+        }
+
+        $this->refreshToken = $refreshToken;
 
         return $this;
     }
@@ -152,7 +168,7 @@ final class ClientBuilder
             $certificatePath = CertificatePath::from($certificatePath, $passphrase);
         }
 
-        $this->apiToken = null;
+        $this->ksefToken = null;
 
         $this->certificatePath = $certificatePath;
 
@@ -173,24 +189,13 @@ final class ClientBuilder
         return $this;
     }
 
-    public function withNIP(NIP | string $nip): self
+    public function withIdentifier(NIP | NipVatUe | InternalId | PeppolId | string $identifier): self
     {
-        if ($nip instanceof NIP === false) {
-            $nip = NIP::from($nip);
+        if (is_string($identifier)) {
+            $identifier = NIP::from($identifier);
         }
 
-        $this->nip = $nip;
-
-        return $this;
-    }
-
-    public function withKSEFPublicKeyPath(KSEFPublicKeyPath | string $ksefPublicKeyPath): self
-    {
-        if ($ksefPublicKeyPath instanceof KSEFPublicKeyPath === false) {
-            $ksefPublicKeyPath = KSEFPublicKeyPath::from($ksefPublicKeyPath);
-        }
-
-        $this->ksefPublicKeyPath = $ksefPublicKeyPath;
+        $this->identifier = $identifier;
 
         return $this;
     }
@@ -213,72 +218,64 @@ final class ClientBuilder
         return $this;
     }
 
-    public function build(): ClientResource
+    public function build(): ClientResourceInterface
     {
-        if ( ! $this->ksefPublicKeyPath instanceof KSEFPublicKeyPath) {
-            throw new InvalidArgumentException('KSEF public key path is required.');
-        }
-
         $config = new Config(
+            baseUri: new BaseUri($this->apiUrl->value),
+            accessToken: $this->accessToken,
+            refreshToken: $this->refreshToken,
             encryptionKey: $this->encryptionKey,
-            ksefPublicKeyPath: $this->ksefPublicKeyPath,
-        );
-
-        $httpClientConfig = new HttpClientConfig(
-            baseUri: new BaseUri($this->apiUrl->value)
         );
 
         $httpClient = new HttpClient(
             client: $this->httpClient,
-            config: $httpClientConfig,
+            config: $config,
             logger: $this->logger
         );
 
         $client = new ClientResource($httpClient, $config, $this->logger);
 
-        if ($this->sessionToken instanceof SessionToken) {
-            return $client->withSessionToken($this->sessionToken);
-        }
-
         if ($this->isAuthorisation()) {
-            /** @var object{challenge: string, timestamp: string} $authorisationChallengeResponse */
-            $authorisationChallengeResponse = $client->online()->session()->authorisationChallenge(
-                new AuthorisationChallengeRequest(
-                    contextIdentifier: new SubjectIdentifierBy(
-                        subjectIdentifierByGroup: new SubjectIdentifierByCompanyGroup(
-                            subjectIdentifierByCompany: SubjectIdentifierByCompany::from($this->nip->value)
-                        )
-                    )
-                )
-            )->object();
-
-            $authorisationSessionResponse = match (true) { //@phpstan-ignore-line
-                $this->apiToken instanceof ApiToken => $client->online()->session()->initToken(
-                    new InitTokenRequest(
-                        apiToken: $this->apiToken,
-                        initSessionToken: new InitSessionToken(
-                            challenge: Challenge::from($authorisationChallengeResponse->challenge),
-                            timestamp: new DateTimeImmutable($authorisationChallengeResponse->timestamp),
-                            identifier: SubjectIdentifierByCompany::from($this->nip->value)
-                        )
-                    )
-                ),
-                $this->certificatePath instanceof CertificatePath => $client->online()->session()->initSigned(
-                    new InitSignedRequest(
-                        certificatePath: $this->certificatePath,
-                        initSessionSigned: new InitSessionSigned(
-                            challenge: Challenge::from($authorisationChallengeResponse->challenge),
-                            timestamp: new DateTimeImmutable($authorisationChallengeResponse->timestamp),
-                            identifier: SubjectIdentifierByCompany::from($this->nip->value)
-                        )
-                    )
-                )
+            $authorisationAccessResponse = match (true) { //@phpstan-ignore-line
+                $this->certificatePath instanceof CertificatePath => $this->handleAuthorisationByCertificate($client),
+                $this->ksefToken instanceof KsefToken => $this->handleAuthorisationByKsefToken($client),
             };
 
-            /** @var object{sessionToken: object{token: string}} $authorisationSessionResponse */
-            $authorisationSessionResponse = $authorisationSessionResponse->object();
+            /** @var object{referenceNumber: string, authenticationToken: object{token: string}} $authorisationAccessResponse */
+            $authorisationAccessResponse = $authorisationAccessResponse->object();
 
-            return $client->withSessionToken($authorisationSessionResponse->sessionToken->token);
+            $client = $client->withAccessToken(AccessToken::from($authorisationAccessResponse->authenticationToken->token));
+
+            Utility::retry(function () use ($client, $authorisationAccessResponse) {
+                /** @var object{status: object{code: int, description: string}} $authorisationStatusResponse */
+                $authorisationStatusResponse = $client->auth()->status(
+                    new StatusRequest(ReferenceNumber::from($authorisationAccessResponse->referenceNumber))
+                )->object();
+
+                if ($authorisationStatusResponse->status->code === 200) {
+                    return $authorisationStatusResponse;
+                }
+
+                if ($authorisationStatusResponse->status->code >= 400) {
+                    throw new RuntimeException(
+                        $authorisationStatusResponse->status->description,
+                        $authorisationStatusResponse->status->code
+                    );
+                }
+            });
+
+            /** @var object{refreshToken: object{token: string, validUntil: string}, accessToken: object{token: string, validUntil: string}} $authorisationTokenResponse */
+            $authorisationTokenResponse = $client->auth()->token()->redeem()->object();
+
+            $client = $client
+                ->withAccessToken(AccessToken::from(
+                    token: $authorisationTokenResponse->accessToken->token,
+                    validUntil: new DateTimeImmutable($authorisationTokenResponse->accessToken->validUntil)
+                ))
+                ->withRefreshToken(RefreshToken::from(
+                    token: $authorisationTokenResponse->refreshToken->token,
+                    validUntil: new DateTimeImmutable($authorisationTokenResponse->refreshToken->validUntil)
+                ));
         }
 
         return $client;
@@ -286,8 +283,70 @@ final class ClientBuilder
 
     private function isAuthorisation(): bool
     {
-        return ! $this->sessionToken instanceof SessionToken && (
-            $this->apiToken instanceof ApiToken || $this->certificatePath instanceof CertificatePath
+        return ! $this->accessToken instanceof AccessToken && (
+            $this->ksefToken instanceof KsefToken || $this->certificatePath instanceof CertificatePath
+        );
+    }
+
+    private function handleAuthorisationByCertificate(ClientResourceInterface $client): ResponseInterface
+    {
+        if ( ! $this->certificatePath instanceof CertificatePath) {
+            throw new RuntimeException('Certificate path is not set');
+        }
+
+        /** @var object{challenge: string, timestamp: string} $challengeResponse */
+        $challengeResponse = $client->auth()->challenge()->object();
+
+        return $client->auth()->xadesSignature(
+            new XadesSignatureRequest(
+                certificatePath: $this->certificatePath,
+                xadesSignature: new XadesSignature(
+                    challenge: Challenge::from($challengeResponse->challenge),
+                    contextIdentifierGroup: ContextIdentifierGroup::fromIdentifier($this->identifier),
+                    subjectIdentifierType: SubjectIdentifierType::CertificateSubject
+                )
+            )
+        );
+    }
+
+    private function handleAuthorisationByKsefToken(ClientResourceInterface $client): ResponseInterface
+    {
+        if ( ! $this->ksefToken instanceof KsefToken) {
+            throw new RuntimeException('KSEF token is not set');
+        }
+
+        /** @var object{challenge: string, timestamp: string} $challengeResponse */
+        $challengeResponse = $client->auth()->challenge()->object();
+
+        $securityResponse = $client->security()->publicKeyCertificates();
+
+        $firstKsefTokenEncryptionCertificate = $securityResponse->getFirstByPublicKeyCertificateUsage(PublicKeyCertificateUsage::KsefTokenEncryption);
+
+        if ($firstKsefTokenEncryptionCertificate === null) {
+            throw new RuntimeException('KSEF token encryption certificate is not found');
+        }
+
+        $ksefTokenEncryptionCertificate = base64_decode($firstKsefTokenEncryptionCertificate);
+
+        $certificate = new ConvertDerToPemHandler()->handle(new ConvertDerToPemAction(
+            der: $ksefTokenEncryptionCertificate,
+            name: 'CERTIFICATE'
+        ));
+
+        $ksefPublicKey = KsefPublicKey::from($certificate);
+
+        $encryptedToken = EncryptedTokenFactory::make(
+            ksefToken: $this->ksefToken,
+            timestamp: new DateTimeImmutable($challengeResponse->timestamp),
+            ksefPublicKey: $ksefPublicKey
+        );
+
+        return $client->auth()->ksefToken(
+            new KsefTokenRequest(
+                challenge: Challenge::from($challengeResponse->challenge),
+                contextIdentifierGroup: ContextIdentifierGroup::fromIdentifier($this->identifier),
+                encryptedToken: $encryptedToken
+            )
         );
     }
 }

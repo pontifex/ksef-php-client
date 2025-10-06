@@ -16,5 +16,4 @@ return (new PhpCsFixer\Config())
         '@PSR12' => true,
         'not_operator_with_space' => true,
     ])
-    ->setFinder($finder)
-;
+    ->setFinder($finder);

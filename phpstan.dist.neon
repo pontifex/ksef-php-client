@@ -12,3 +12,8 @@ parameters:
 
 	ignoreErrors:
 		- '#^Parameter \#1 \$node of method DOMDocument::importNode\(\) expects DOMNode, DOMElement\|null given.$#'
+		- '#^Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage::andReturn#'
+		- '#^Call to an undefined method Pest\\PendingCalls\\TestCall\|Pest\\Support\\HigherOrderTapProxy::with\(\).$#'
+		- '#^Call to an undefined method Pest\\Expectation<([a-zA-Z0-9\\]+)\|null>::toBeFixture\(\).$#'
+		- '#^Call to an undefined method Pest\\Expectation<array<string, mixed>\|object\|null>::toBeFixture\(\).$#'
+		- '#^Call to an undefined method Pest\\Expectation<\(Closure\)\|null>::toBeExceptionFixture\(\).$#'

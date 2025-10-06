@@ -4,24 +4,29 @@ declare(strict_types=1);
 
 namespace N1ebieski\KSEFClient\Factories;
 
-use N1ebieski\KSEFClient\Requests\Online\Session\ValueObjects\EncryptedKey;
 use N1ebieski\KSEFClient\ValueObjects\EncryptionKey;
-use N1ebieski\KSEFClient\ValueObjects\KSEFPublicKeyPath;
+use N1ebieski\KSEFClient\ValueObjects\KsefPublicKey;
+use N1ebieski\KSEFClient\ValueObjects\Requests\Sessions\EncryptedKey;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Crypt\RSA;
+use phpseclib3\Crypt\RSA\PublicKey as RSAPublicKey;
 use RuntimeException;
 
 final readonly class EncryptedKeyFactory extends AbstractFactory
 {
-    public static function make(EncryptionKey $encryptionKey, KSEFPublicKeyPath $ksefPublicKeyPath): EncryptedKey
+    public static function make(EncryptionKey $encryptionKey, KsefPublicKey $ksefPublicKey): EncryptedKey
     {
-        $ksefPublicKey = file_get_contents($ksefPublicKeyPath->value);
+        /** @var RSAPublicKey $pub */
+        $pub = PublicKeyLoader::load($ksefPublicKey->value);
 
-        if ($ksefPublicKey === false) {
-            throw new RuntimeException('Unable to read KSEF public key');
-        }
+        //@phpstan-ignore-next-line
+        $encryptedKey = $pub
+            ->withPadding(RSA::ENCRYPTION_OAEP)
+            ->withHash('sha256')
+            ->withMGFHash('sha256')
+            ->encrypt($encryptionKey->key);
 
-        $encryptKey = openssl_public_encrypt($encryptionKey->key, $encryptedKey, $ksefPublicKey, OPENSSL_PKCS1_PADDING);
-
-        if ($encryptKey === false) {
+        if ($encryptedKey === false) {
             throw new RuntimeException('Unable to encrypt key');
         }
 

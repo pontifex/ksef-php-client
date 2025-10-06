@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace N1ebieski\KSEFClient\Contracts\HttpClient;
 
 use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
-use N1ebieski\KSEFClient\HttpClient\DTOs\Request;
-use N1ebieski\KSEFClient\HttpClient\ValueObjects\SessionToken;
+use N1ebieski\KSEFClient\DTOs\HttpClient\Request;
+use N1ebieski\KSEFClient\ValueObjects\AccessToken;
 
 interface HttpClientInterface
 {
     public function sendRequest(Request $request): ResponseInterface;
 
-    public function getSessionToken(): ?SessionToken;
-
-    public function withSessionToken(SessionToken $sessionToken): self;
+    public function withAccessToken(AccessToken $accessToken): self;
 }
