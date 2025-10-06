@@ -9,11 +9,12 @@ PHP API client that allows you to interact with the [Krajowy System e-Faktur KSE
 
 Main features:
 
-- Support for authorization via qualified certificates, KSEF certificates, KSEF tokens, and trusted signature ePUAP (manual)
-- Logical invoice structure mapped to DTOs/ValueObjects
+- Support for authorization using qualified certificates, KSeF certificates, KSeF tokens, and trusted ePUAP signatures (manual mode)
+- Logical invoice structure mapped to DTOs and Value Objects
 - Automatic access token refresh
-- Handling of CSR certification requests
-- Generating QR codes
+- CSR (Certificate Signing Request) handling
+- KSeF exception handling
+- QR code generation
 
 |  KSEF Version  | Branch Version | Release Version |
 |:--------------:|:--------------:|:---------------:|
@@ -40,7 +41,7 @@ Main features:
     - [Security](#security)
         - [Public Key Certificates](#public-key-certificates)
     - [Sessions](#sessions)
-        - [Invoices](#invoices)
+        - [Sessions Invoices](#sessions-invoices)
             - [Upo](#upo)
             - [Ksef Upo](#ksef-upo)
             - [Invoices Status](#invoices-status)
@@ -49,6 +50,8 @@ Main features:
             - [Close](#close)
             - [Invoices Send](#invoices-send)
         - [Sessions Status](#sessions-status)
+    - [Invoices]
+        - [Invoices Download](#invoices-download)
     - [Certificates](#certificates)
         - [Limits](#limits)
         - [Enrollments](#enrollments)
@@ -334,7 +337,7 @@ $response = $client->security()->publicKeyCertificates()->object();
 
 ### Sessions
 
-#### Invoices
+#### Sessions Invoices
 
 <details>
     <summary>
@@ -458,6 +461,24 @@ use N1ebieski\KSEFClient\Requests\Sessions\Status\StatusRequest;
 
 $response = $client->sessions()->status(
     new StatusRequest(...)
+)->object();
+```
+</details>
+
+### Invoices
+
+<details>
+    <summary>
+        <h4>Invoices Download</h4>
+    </summary>
+
+https://ksef-test.mf.gov.pl/docs/v2/index.html#tag/Pobieranie-faktur/paths/~1api~1v2~1invoices~1ksef~1%7BksefNumber%7D/get
+
+```php
+use N1ebieski\KSEFClient\Requests\Invoices\Download\DownloadRequest;
+
+$response = $client->invoices()->download(
+    new DownloadRequest(...)
 )->object();
 ```
 </details>

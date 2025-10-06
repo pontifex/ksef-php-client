@@ -14,6 +14,7 @@ use N1ebieski\KSEFClient\ValueObjects\RefreshToken;
 dataset('resourceProvider', function () {
     return [
         ['sessions'],
+        ['invoices'],
         ['certificates'],
         ['tokens']
     ];

@@ -52,6 +52,6 @@ test('invalid response', function () {
 
         $clientStub = getClientStub($responseFixture);
 
-        $clientStub->auth()->ksefToken($requestFixture->data);
+        $clientStub->sessions()->online()->open($requestFixture->data);
     })->toBeExceptionFixture($responseFixture->data);
 });

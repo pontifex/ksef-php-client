@@ -7,6 +7,7 @@ namespace N1ebieski\KSEFClient\Contracts\Resources;
 use DateTimeInterface;
 use N1ebieski\KSEFClient\Contracts\Resources\Auth\AuthResourceInterface;
 use N1ebieski\KSEFClient\Contracts\Resources\Certificates\CertificatesResourceInterface;
+use N1ebieski\KSEFClient\Contracts\Resources\Invoices\InvoicesResourceInterface;
 use N1ebieski\KSEFClient\Contracts\Resources\Security\SecurityResourceInterface;
 use N1ebieski\KSEFClient\Contracts\Resources\Sessions\SessionsResourceInterface;
 use N1ebieski\KSEFClient\Contracts\Resources\Testdata\TestdataResourceInterface;
@@ -20,15 +21,17 @@ interface ClientResourceInterface
 
     public function getRefreshToken(): ?RefreshToken;
 
-    public function withAccessToken(AccessToken $accessToken, ?DateTimeInterface $validUntil = null): self;
+    public function withAccessToken(AccessToken | string $accessToken, DateTimeInterface | string | null $validUntil = null): self;
 
-    public function withRefreshToken(RefreshToken $refreshToken, ?DateTimeInterface $validUntil = null): self;
+    public function withRefreshToken(RefreshToken | string $refreshToken, DateTimeInterface | string | null $validUntil = null): self;
 
     public function auth(): AuthResourceInterface;
 
     public function security(): SecurityResourceInterface;
 
     public function sessions(): SessionsResourceInterface;
+
+    public function invoices(): InvoicesResourceInterface;
 
     public function certificates(): CertificatesResourceInterface;
 
