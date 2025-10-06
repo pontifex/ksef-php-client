@@ -57,7 +57,7 @@ jobs:
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run CS Fixer
-        run: PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer fix --dry-run
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --allow-unsupported-php-version=yes
 
       - name: Run Rector
         run: ./vendor/bin/rector process --dry-run
