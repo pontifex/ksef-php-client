@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace N1ebieski\KSEFClient\Actions\GenerateQRCodes;
 
 use Endroid\QrCode\Builder\BuilderInterface as QrCodeBuilderInterface;
-use Endroid\QrCode\RoundBlockSizeMode;
 use N1ebieski\KSEFClient\Actions\AbstractHandler;
 use N1ebieski\KSEFClient\Actions\ConvertEcdsaDerToRaw\ConvertEcdsaDerToRawAction;
 use N1ebieski\KSEFClient\Actions\ConvertEcdsaDerToRaw\ConvertEcdsaDerToRawHandler;

@@ -74,7 +74,7 @@ Main features:
     - [Generate a KSEF certificate and convert to .p12 file](#generate-a-ksef-certificate-and-convert-to-p12-file)
     - [Send an invoice, check for UPO and generate QR code](#send-an-invoice-check-for-upo-and-generate-qr-code)
     - [Create an offline invoice and generate both QR codes](#create-an-offline-invoice-and-generate-both-qr-codes)
-    - [Fetch invoices using encryption key](#fetch-invoices-using-encryption-key)
+    - [Download and decrypt invoices using the encryption key](#download-and-decrypt-invoices-using-the-encryption-key)
 - [Testing](#testing)
 - [Roadmap](#roadmap)
 - [Special thanks](#special-thanks)

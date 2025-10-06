@@ -21,7 +21,7 @@ final readonly class ContextIdentifierGroup extends AbstractDTO implements DomSe
     ) {
     }
 
-    public static function fromIdentifier(NIP | NipVatUe | InternalId $identifier): self
+    public static function fromIdentifier(NIP | NipVatUe | InternalId | PeppolId $identifier): self
     {
         return match (true) {
             $identifier instanceof NIP => new self(new ContextIdentifierNipGroup($identifier)),
