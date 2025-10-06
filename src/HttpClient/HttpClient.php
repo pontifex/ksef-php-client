@@ -48,10 +48,6 @@ final readonly class HttpClient implements HttpClientInterface
         );
 
         foreach ($request->headers as $name => $value) {
-            if ($value === null) {
-                continue;
-            }
-
             $clientRequest = $clientRequest->withHeader($name, $value);
         }
 

@@ -7,7 +7,7 @@ namespace N1ebieski\KSEFClient\Contracts;
 interface HeadersInterface
 {
     /**
-     * @return array<string, mixed>
+     * @return array<string, string>
      */
     public function toHeaders(): array;
 }

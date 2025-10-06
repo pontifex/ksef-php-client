@@ -32,6 +32,7 @@ final readonly class ListRequest extends AbstractRequest implements ParametersIn
 
     public function toParameters(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray(only: ['status', 'description', 'authorIdentifier', 'authorIdentifierType', 'pageSize']);
     }
 
