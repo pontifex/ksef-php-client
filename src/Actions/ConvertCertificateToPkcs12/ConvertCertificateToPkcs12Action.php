@@ -14,7 +14,7 @@ final readonly class ConvertCertificateToPkcs12Action extends AbstractAction
         #[SensitiveParameter]
         public Certificate $certificate,
         #[SensitiveParameter]
-        public ?string $passphrase = null
+        public string $passphrase
     ) {
     }
 }

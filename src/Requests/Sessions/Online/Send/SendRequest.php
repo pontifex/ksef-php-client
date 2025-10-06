@@ -23,6 +23,7 @@ final readonly class SendRequest extends AbstractRequest implements XmlSerializa
 
     public function toBody(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray(only: ['offlineMode', 'hashOfCorrectedInvoice']);
     }
 

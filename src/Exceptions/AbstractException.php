@@ -23,6 +23,7 @@ abstract class AbstractException extends Exception implements ArrayableInterface
 
     public function toArray(KeyType $keyType = KeyType::Camel, array $only = []): array
     {
+        /** @var array<string, mixed> */
         return Arr::normalize([
             'code' => $this->getCode(),
             'message' => $this->getMessage(),

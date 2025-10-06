@@ -39,7 +39,7 @@ final readonly class GenerateQRCodesHandler extends AbstractHandler
 
         $code1 = $this->qrCodeBuilder->build(
             data: $invoiceLink,
-            labelText: $action->ksefNumber?->value ?? 'OFFLINE'
+            labelText: $action->ksefNumber->value ?? 'OFFLINE'
         )->getString();
 
         $code2 = null;
@@ -76,11 +76,11 @@ final readonly class GenerateQRCodesHandler extends AbstractHandler
             // If private key type is EC, convert DER to raw. Don't ask me why, but it works
             if ($action->certificate->getPrivateKeyType()->isEquals(PrivateKeyType::EC)) {
                 $signature = $this->convertEcdsaDerToRawHandler->handle(
-                    new ConvertEcdsaDerToRawAction($signature, 32)
+                    new ConvertEcdsaDerToRawAction($signature, 32) //@phpstan-ignore-line
                 );
             }
 
-            $signature = Str::base64URLEncode($signature);
+            $signature = Str::base64URLEncode($signature); //@phpstan-ignore-line
 
             $certificateLink .= "/{$signature}";
 

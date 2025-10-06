@@ -42,6 +42,6 @@ final class SessionsResource extends AbstractResource implements SessionsResourc
 
     public function invoices(): InvoicesResourceInterface
     {
-        return new InvoicesResource($this->client, $this->config, $this->logger);
+        return new InvoicesResource($this->client);
     }
 }

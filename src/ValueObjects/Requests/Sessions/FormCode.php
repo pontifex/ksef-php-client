@@ -36,7 +36,7 @@ enum FormCode: string implements EnumInterface
     {
         return match ($this) {
             self::Fa2 => 'http://crd.gov.pl/wzor/2023/06/29/12648/',
-            self::Fa3 => 'http://crd.gov.pl/wzor/2025/06/25/13775/'
+            self::Fa3, self::FaPef3, self::FaKorPef3 => 'http://crd.gov.pl/wzor/2025/06/25/13775/'
         };
     }
 
@@ -44,7 +44,7 @@ enum FormCode: string implements EnumInterface
     {
         return match ($this) {
             self::Fa2 => '2',
-            self::Fa3 => '3',
+            self::Fa3, self::FaPef3, self::FaKorPef3 => '3',
         };
     }
 }

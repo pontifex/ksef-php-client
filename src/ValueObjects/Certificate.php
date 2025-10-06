@@ -28,6 +28,7 @@ final readonly class Certificate extends AbstractValueObject
     /**
      * @return array{bits: int, key: string, rsa: array, dsa: array, dh: array, ec: array, type: int}
      */
+    //@phpstan-ignore-next-line
     private function getPrivateKeyDetails(): array
     {
         $details = openssl_pkey_get_details($this->privateKey);
@@ -36,7 +37,7 @@ final readonly class Certificate extends AbstractValueObject
             throw new RuntimeException('Unable to get key details');
         }
 
-        return $details;
+        return $details; //@phpstan-ignore-line
     }
 
     public function getPrivateKeyType(): PrivateKeyType
@@ -48,8 +49,7 @@ final readonly class Certificate extends AbstractValueObject
     {
         return match ($this->getPrivateKeyType()) {
             PrivateKeyType::RSA => 'sha256WithRSAEncryption',
-            PrivateKeyType::EC => OPENSSL_ALGO_SHA256,
-            default => OPENSSL_ALGO_SHA256,
+            PrivateKeyType::EC => OPENSSL_ALGO_SHA256
         };
     }
 

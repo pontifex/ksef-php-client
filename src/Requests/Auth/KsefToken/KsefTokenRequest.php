@@ -24,8 +24,11 @@ final readonly class KsefTokenRequest extends AbstractRequest implements BodyInt
 
     public function toBody(): array
     {
+        /** @var array<string, mixed> */
+        $data = $this->toArray(only: ['challenge', 'encryptedToken', 'authorizationPolicy']);
+
         return [
-            ...$this->toArray(only: ['challenge', 'encryptedToken', 'authorizationPolicy']),
+            ...$data,
             'contextIdentifier' => $this->contextIdentifierGroup->toBody(),
         ];
     }

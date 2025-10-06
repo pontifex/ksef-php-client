@@ -10,7 +10,13 @@ use N1ebieski\KSEFClient\Requests\Testdata\Person\Remove\RemoveRequest;
 
 interface PersonResourceInterface
 {
+    /**
+     * @param CreateRequest|array<string, mixed> $request
+     */
     public function create(CreateRequest | array $request): ResponseInterface;
 
+    /**
+     * @param RemoveRequest|array<string, mixed> $request
+     */
     public function remove(RemoveRequest | array $request): ResponseInterface;
 }

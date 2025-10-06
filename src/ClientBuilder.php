@@ -241,11 +241,13 @@ final class ClientBuilder
                 $this->ksefToken instanceof KsefToken => $this->handleAuthorisationByKsefToken($client),
             };
 
+            /** @var object{referenceNumber: string, authenticationToken: object{token: string}} $authorisationAccessResponse */
             $authorisationAccessResponse = $authorisationAccessResponse->object();
 
             $client = $client->withAccessToken(AccessToken::from($authorisationAccessResponse->authenticationToken->token));
 
             Utility::retry(function () use ($client, $authorisationAccessResponse) {
+                /** @var object{status: object{code: int, description: string}} $authorisationStatusResponse */
                 $authorisationStatusResponse = $client->auth()->status(
                     new StatusRequest(ReferenceNumber::from($authorisationAccessResponse->referenceNumber))
                 )->object();
@@ -262,7 +264,7 @@ final class ClientBuilder
                 }
             });
 
-            /** @var object{refreshToken: object{token: string, validUntil: string<date-time>}, accessToken: object{token: string, validUntil: string<date-time>}} $authorisationTokenResponse */
+            /** @var object{refreshToken: object{token: string, validUntil: string}, accessToken: object{token: string, validUntil: string}} $authorisationTokenResponse */
             $authorisationTokenResponse = $client->auth()->token()->redeem()->object();
 
             $client = $client
@@ -318,9 +320,13 @@ final class ClientBuilder
 
         $securityResponse = $client->security()->publicKeyCertificates();
 
-        $ksefTokenEncryptionCertificate = base64_decode(
-            $securityResponse->getFirstByPublicKeyCertificateUsage(PublicKeyCertificateUsage::KsefTokenEncryption)
-        );
+        $firstKsefTokenEncryptionCertificate = $securityResponse->getFirstByPublicKeyCertificateUsage(PublicKeyCertificateUsage::KsefTokenEncryption);
+
+        if ($firstKsefTokenEncryptionCertificate === null) {
+            throw new RuntimeException('KSEF token encryption certificate is not found');
+        }
+
+        $ksefTokenEncryptionCertificate = base64_decode($firstKsefTokenEncryptionCertificate);
 
         $certificate = new ConvertDerToPemHandler()->handle(new ConvertDerToPemAction(
             der: $ksefTokenEncryptionCertificate,

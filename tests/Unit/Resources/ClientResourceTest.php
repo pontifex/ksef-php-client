@@ -32,6 +32,7 @@ test('auto access token refresh', function (string $resource) {
 
     $clientStub->{$resource}();
 
+    /** @var AccessToken $newAccessToken */
     $newAccessToken = $clientStub->getAccessToken();
 
     expect($newAccessToken->isEquals($accessToken))->toBeFalse();

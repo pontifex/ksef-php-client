@@ -10,10 +10,9 @@ final readonly class ConvertPemToDerHandler extends AbstractHandler
 {
     public function handle(ConvertPemToDerAction $action): string
     {
-        return base64_decode(preg_replace(
-            '/-+BEGIN [^-]+-+|-+END [^-]+-+|\s+/',
-            '',
-            $action->pem
-        ));
+        /** @var string $der */
+        $der = preg_replace('/-+BEGIN [^-]+-+|-+END [^-]+-+|\s+/', '', $action->pem);
+
+        return base64_decode($der);
     }
 }

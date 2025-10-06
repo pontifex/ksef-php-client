@@ -8,13 +8,13 @@ use DateTime;
 use N1ebieski\KSEFClient\Contracts\BodyInterface;
 use N1ebieski\KSEFClient\Contracts\ParametersInterface;
 use N1ebieski\KSEFClient\Requests\AbstractRequest;
-use N1ebieski\KSEFClient\ValueObjects\Requests\Certificates\CertificateName;
+use N1ebieski\KSEFClient\Support\Optional;
 use N1ebieski\KSEFClient\ValueObjects\CertificateSerialNumber;
+use N1ebieski\KSEFClient\ValueObjects\Requests\Certificates\CertificateName;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Certificates\CertificateStatus;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Certificates\CertificateType;
 use N1ebieski\KSEFClient\ValueObjects\Requests\PageOffset;
 use N1ebieski\KSEFClient\ValueObjects\Requests\PageSize;
-use N1ebieski\KSEFClient\Support\Optional;
 
 final readonly class QueryRequest extends AbstractRequest implements BodyInterface, ParametersInterface
 {
@@ -31,11 +31,13 @@ final readonly class QueryRequest extends AbstractRequest implements BodyInterfa
 
     public function toBody(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray(only: ['name', 'type', 'status', 'certificateSerialNumber', 'expiresAfter']);
     }
 
     public function toParameters(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray(only: ['pageSize', 'pageOffset']);
     }
 }

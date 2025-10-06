@@ -53,7 +53,7 @@ final readonly class Response implements ResponseInterface
 
     public function object(): object | array
     {
-        /** @var object */
+        /** @var object|array<string, mixed> */
         return json_decode($this->contents, flags: JSON_THROW_ON_ERROR);
     }
 
@@ -65,6 +65,7 @@ final readonly class Response implements ResponseInterface
 
     public function toArray(KeyType $keyType = KeyType::Camel, array $only = []): array
     {
+        /** @var array<string, mixed> */
         return Arr::normalize([
             'statusCode' => $this->statusCode,
             'contents' => $this->contents,

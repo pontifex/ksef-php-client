@@ -6,7 +6,6 @@ namespace N1ebieski\KSEFClient\Requests\Testdata\Person\Remove;
 
 use N1ebieski\KSEFClient\Contracts\BodyInterface;
 use N1ebieski\KSEFClient\Requests\AbstractRequest;
-use N1ebieski\KSEFClient\ValueObjects\Support\KeyType;
 use N1ebieski\KSEFClient\ValueObjects\NIP;
 
 final readonly class RemoveRequest extends AbstractRequest implements BodyInterface
@@ -18,6 +17,7 @@ final readonly class RemoveRequest extends AbstractRequest implements BodyInterf
 
     public function toBody(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray();
     }
 }

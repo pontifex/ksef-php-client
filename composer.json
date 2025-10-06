@@ -1,6 +1,6 @@
 {
     "name": "n1ebieski/ksef-php-client",
-    "description": "PHP API client that allows you to interact with the KSEF API",
+    "description": "PHP API client that allows you to interact with the KSEF API Krajowy System e-Faktur",
     "version": "0.2.1",
     "license": "MIT",
     "authors": [

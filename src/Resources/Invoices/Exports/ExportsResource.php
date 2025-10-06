@@ -18,9 +18,7 @@ use Psr\Log\LoggerInterface;
 final class ExportsResource extends AbstractResource implements ExportsResourceInterface
 {
     public function __construct(
-        private readonly HttpClientInterface $client,
-        private readonly Config $config,
-        private readonly ?LoggerInterface $logger = null
+        private readonly HttpClientInterface $client
     ) {
     }
 

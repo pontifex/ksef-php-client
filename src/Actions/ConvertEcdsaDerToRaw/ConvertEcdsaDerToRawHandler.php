@@ -15,6 +15,12 @@ final readonly class ConvertEcdsaDerToRawHandler extends AbstractHandler
     public function handle(ConvertEcdsaDerToRawAction $action): string
     {
         $data = unpack('C*', $action->der);
+
+        if ($data === false) {
+            throw new InvalidArgumentException('Invalid DER');
+        }
+
+        /** @var array<int, int> $data */
         $data = array_values($data);
         $offset = 0;
 
@@ -23,7 +29,7 @@ final readonly class ConvertEcdsaDerToRawHandler extends AbstractHandler
         }
 
         $seqLen = $data[$offset++];
-        if ($seqLen & 0x80) {
+        if ($seqLen & 0x80) { //@phpstan-ignore-line
             $lenBytes = $seqLen & 0x7F;
             $seqLen = 0;
             for ($i = 0; $i < $lenBytes; $i++) {

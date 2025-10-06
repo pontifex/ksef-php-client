@@ -7,6 +7,8 @@ namespace N1ebieski\KSEFClient\Factories;
 use N1ebieski\KSEFClient\DTOs\DN;
 use N1ebieski\KSEFClient\ValueObjects\CSR;
 use N1ebieski\KSEFClient\ValueObjects\PrivateKeyType;
+use OpenSSLAsymmetricKey;
+use OpenSSLCertificateSigningRequest;
 use RuntimeException;
 
 final readonly class CSRFactory extends AbstractFactory
@@ -27,12 +29,17 @@ final readonly class CSRFactory extends AbstractFactory
 
         $raw = '';
 
+        /** @var OpenSSLCertificateSigningRequest $csr */
         $result = openssl_csr_export($csr, $raw);
 
         if ($result === false) {
             throw new RuntimeException('Unable to export CSR');
         }
 
+        /**
+         * @var string $raw
+         * @var OpenSSLAsymmetricKey $privateKey
+         */
         return new CSR($raw, $privateKey);
     }
 }

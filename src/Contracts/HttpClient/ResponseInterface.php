@@ -18,6 +18,9 @@ interface ResponseInterface extends ArrayableInterface
      */
     public function json(): array;
 
+    /**
+     * @return object|array<string, mixed>
+     */
     public function object(): object | array;
 
     public function body(): string;

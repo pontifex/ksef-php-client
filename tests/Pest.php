@@ -50,13 +50,12 @@ pest()->extend(AbstractTestCase::class)->in('Unit');
 */
 expect()->extend('toBeFixture', $toFixture = function (array $data, ?object $object = null) use (&$toFixture): void {
     if ($object === null) {
-        $object = $this->value;
+        $object = $this->value; //@phpstan-ignore-line
     }
 
     foreach ($data as $key => $value) {
         expect($object)->toHaveProperty($key);
 
-        //@phpstan-ignore-next-line
         if (is_array($value) && is_array($object->{$key}) && isset($object->{$key}[0]) && is_object($object->{$key}[0])) {
             foreach ($object->{$key} as $itemKey => $itemValue) {
                 if (is_string($value[$itemKey])) {
@@ -90,9 +89,7 @@ expect()->extend('toBeFixture', $toFixture = function (array $data, ?object $obj
         };
 
         $actual = match (true) {
-            //@phpstan-ignore-next-line
             $object->{$key} instanceof DateTimeInterface => $object->{$key},
-            //@phpstan-ignore-next-line
             $object->{$key} instanceof ValueAwareInterface => $object->{$key}->value,
             default => $object->{$key},
         };
@@ -102,12 +99,12 @@ expect()->extend('toBeFixture', $toFixture = function (array $data, ?object $obj
 });
 
 expect()->extend('toBeExceptionFixture', function (array $data): void {
+    /** @var array{exception: array{exceptionCode: string, exceptionDescription: string, exceptionDetailList: array<array{exceptionCode: string, exceptionDescription: string}>}} $data */
     $firstException = $data['exception']['exceptionDetailList'][0];
 
+    //@phpstan-ignore-next-line
     expect($this->value)->toThrow(new BadRequestException(
-        //@phpstan-ignore-next-line
         message: "{$firstException['exceptionCode']} {$firstException['exceptionDescription']}",
-        //@phpstan-ignore-next-line
         code: 400,
         context: (object) $data
     ));
@@ -135,8 +132,11 @@ function getClientStub(AbstractResponseFixture $response): ClientResourceInterfa
 
     $httpClientStub = Mockery::mock(HttpClientInterface::class);
     $httpClientStub->shouldReceive('withAccessToken')->andReturnSelf();
+
+    /** @var ResponseInterface $responseStub */
     $httpClientStub->shouldReceive('sendRequest')->andReturn(new Response($responseStub, new ExceptionHandler()));
 
+    /** @var HttpClientInterface $httpClientStub */
     return new ClientResource($httpClientStub, new Config(
         baseUri: new BaseUri(Mode::Test->getApiUrl()->value),
         encryptionKey: EncryptionKeyFactory::makeRandom()

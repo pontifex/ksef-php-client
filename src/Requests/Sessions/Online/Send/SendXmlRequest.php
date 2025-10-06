@@ -7,8 +7,8 @@ namespace N1ebieski\KSEFClient\Requests\Sessions\Online\Send;
 use N1ebieski\KSEFClient\Contracts\BodyInterface;
 use N1ebieski\KSEFClient\Contracts\XmlSerializableInterface;
 use N1ebieski\KSEFClient\Requests\AbstractRequest;
-use N1ebieski\KSEFClient\ValueObjects\Requests\ReferenceNumber;
 use N1ebieski\KSEFClient\Support\Optional;
+use N1ebieski\KSEFClient\ValueObjects\Requests\ReferenceNumber;
 
 final readonly class SendXmlRequest extends AbstractRequest implements XmlSerializableInterface, BodyInterface
 {
@@ -22,6 +22,7 @@ final readonly class SendXmlRequest extends AbstractRequest implements XmlSerial
 
     public function toBody(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray(only: ['offlineMode', 'hashOfCorrectedInvoice']);
     }
 

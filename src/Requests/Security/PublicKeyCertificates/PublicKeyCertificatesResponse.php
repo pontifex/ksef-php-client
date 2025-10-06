@@ -6,23 +6,22 @@ namespace N1ebieski\KSEFClient\Requests\Security\PublicKeyCertificates;
 
 use DateTimeImmutable;
 use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
-use N1ebieski\KSEFClient\HttpClient\Response;
-use N1ebieski\KSEFClient\ValueObjects\Support\KeyType;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Security\PublicKeyCertificates\PublicKeyCertificateUsage;
+use N1ebieski\KSEFClient\ValueObjects\Support\KeyType;
 use Psr\Http\Message\ResponseInterface as BaseResponseInterface;
 
 final class PublicKeyCertificatesResponse implements ResponseInterface
 {
     public BaseResponseInterface $baseResponse;
 
-    public function __construct(private Response $response)
+    public function __construct(private ResponseInterface $response)
     {
         $this->baseResponse = $response->baseResponse;
     }
 
     public function getFirstByPublicKeyCertificateUsage(PublicKeyCertificateUsage $type): ?string
     {
-        /** @var array<int, object{certificate: string, validFrom: string<date-time>, validTo: string<date-time>, usage: array<int, string>}> $certificates */
+        /** @var array<int, object{certificate: string, validFrom: string, validTo: string, usage: array<int, string>}> $certificates */
         $certificates = $this->object();
 
         foreach ($certificates as $certificate) {

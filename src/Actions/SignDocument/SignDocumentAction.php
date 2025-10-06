@@ -24,7 +24,6 @@ final readonly class SignDocumentAction extends AbstractAction
         return match ($this->certificate->getPrivateKeyType()) {
             PrivateKeyType::RSA => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
             PrivateKeyType::EC => 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256',
-            default => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
         };
     }
 }

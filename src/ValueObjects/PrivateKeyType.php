@@ -25,6 +25,9 @@ enum PrivateKeyType: string implements EnumInterface
         };
     }
 
+    /**
+     * @return array<string, int | string>
+     */
     public function getOptions(): array
     {
         return match ($this) {

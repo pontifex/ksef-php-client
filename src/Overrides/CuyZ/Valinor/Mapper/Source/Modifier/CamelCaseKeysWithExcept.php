@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace N1ebieski\KSEFClient\Overrides\CuyZ\Valinor\Mapper\Source\Modifier;
 
-use IteratorAggregate;
-use Traversable;
-
 use function is_iterable;
+use IteratorAggregate;
+
+use Traversable;
 
 /**
  * @api
@@ -43,7 +43,7 @@ final class CamelCaseKeysWithExcept implements IteratorAggregate
             }
 
             if ( ! is_string($key)) {
-                $result[$key] = $value;
+                $result[$key] = $value; //@phpstan-ignore-line
                 continue;
             }
 

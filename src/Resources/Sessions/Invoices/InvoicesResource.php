@@ -20,9 +20,7 @@ use Psr\Log\LoggerInterface;
 final class InvoicesResource extends AbstractResource implements InvoicesResourceInterface
 {
     public function __construct(
-        private readonly HttpClientInterface $client,
-        private readonly Config $config,
-        private readonly ?LoggerInterface $logger = null
+        private readonly HttpClientInterface $client
     ) {
     }
 

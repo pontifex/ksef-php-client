@@ -22,6 +22,7 @@ final readonly class CreateRequest extends AbstractRequest implements BodyInterf
 
     public function toBody(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray();
     }
 }

@@ -6,17 +6,18 @@ namespace N1ebieski\KSEFClient\DTOs\Requests\Auth;
 
 use DOMDocument;
 use N1ebieski\KSEFClient\Contracts\DomSerializableInterface;
+use N1ebieski\KSEFClient\Contracts\Requests\Auth\IdentifierInterface;
 use N1ebieski\KSEFClient\Support\AbstractDTO;
 use N1ebieski\KSEFClient\ValueObjects\PeppolId;
 
-final readonly class ContextIdentifierPeppolIdGroup extends AbstractDTO implements DomSerializableInterface
+final readonly class ContextIdentifierPeppolIdGroup extends AbstractDTO implements DomSerializableInterface, IdentifierInterface
 {
     public function __construct(
         public PeppolId $peppolId,
     ) {
     }
 
-    public function getValue(): PeppolId
+    public function getIdentifier(): PeppolId
     {
         return $this->peppolId;
     }

@@ -6,17 +6,18 @@ namespace N1ebieski\KSEFClient\DTOs\Requests\Auth;
 
 use DOMDocument;
 use N1ebieski\KSEFClient\Contracts\DomSerializableInterface;
+use N1ebieski\KSEFClient\Contracts\Requests\Auth\IdentifierInterface;
 use N1ebieski\KSEFClient\Support\AbstractDTO;
 use N1ebieski\KSEFClient\ValueObjects\NipVatUe;
 
-final readonly class ContextIdentifierNipVatUeGroup extends AbstractDTO implements DomSerializableInterface
+final readonly class ContextIdentifierNipVatUeGroup extends AbstractDTO implements DomSerializableInterface, IdentifierInterface
 {
     public function __construct(
         public NipVatUe $nipVatUe,
     ) {
     }
 
-    public function getValue(): NipVatUe
+    public function getIdentifier(): NipVatUe
     {
         return $this->nipVatUe;
     }

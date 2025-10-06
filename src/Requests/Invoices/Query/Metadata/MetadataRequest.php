@@ -49,11 +49,13 @@ final readonly class MetadataRequest extends AbstractRequest implements Paramete
 
     public function toParameters(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray(only: ['pageSize', 'pageOffset']);
     }
 
     public function toBody(): array
     {
+        /** @var array<string, mixed> */
         return $this->toArray(only: [
             'subjectType',
             'dateRange',

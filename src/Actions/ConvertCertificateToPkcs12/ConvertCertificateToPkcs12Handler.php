@@ -24,6 +24,7 @@ final readonly class ConvertCertificateToPkcs12Handler extends AbstractHandler
             throw new RuntimeException('Unable to export certificate to PKCS12');
         }
 
+        /** @var string */
         return $pkcs12;
     }
 }

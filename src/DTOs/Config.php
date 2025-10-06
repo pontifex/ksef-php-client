@@ -29,16 +29,22 @@ final readonly class Config extends AbstractDTO
 
     public function withAccessToken(AccessToken $accessToken): self
     {
+        /** @var array<string, mixed> $data */
+        $data = $this->toArray();
+
         return self::from([
-            ...$this->toArray(),
+            ...$data,
             'accessToken' => $accessToken
         ]);
     }
 
     public function withRefreshToken(RefreshToken $refreshToken): self
     {
+        /** @var array<string, mixed> $data */
+        $data = $this->toArray();
+
         return self::from([
-            ...$this->toArray(),
+            ...$data,
             'refreshToken' => $refreshToken
         ]);
     }

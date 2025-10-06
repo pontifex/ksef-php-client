@@ -12,7 +12,13 @@ interface EnrollmentsResourceInterface
 {
     public function data(): ResponseInterface;
 
+    /**
+     * @param SendRequest|array<string, mixed> $request
+     */
     public function send(SendRequest | array $request): ResponseInterface;
 
+    /**
+     * @param StatusRequest|array<string, mixed> $request
+     */
     public function status(StatusRequest | array $request): ResponseInterface;
 }

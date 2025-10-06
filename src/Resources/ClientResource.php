@@ -84,7 +84,7 @@ final class ClientResource extends AbstractResource implements ClientResourceInt
             if ($this->config->refreshToken?->isExpired() === false) {
                 $this->withAccessToken(AccessToken::from($this->config->refreshToken->token));
 
-                /** @var object{accessToken: object{token: string, validUntil: string<date-time>}} $authorisationTokenResponse */
+                /** @var object{accessToken: object{token: string, validUntil: string}} $authorisationTokenResponse */
                 $authorisationTokenResponse = $this->auth()->token()->refresh()->object();
 
                 $this->withAccessToken(AccessToken::from(
@@ -120,7 +120,7 @@ final class ClientResource extends AbstractResource implements ClientResourceInt
     {
         $this->refreshTokenIfExpired();
 
-        return new InvoicesResource($this->client, $this->config, $this->logger);
+        return new InvoicesResource($this->client);
     }
 
     public function certificates(): CertificatesResourceInterface

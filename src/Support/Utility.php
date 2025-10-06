@@ -45,18 +45,21 @@ final class Utility
      */
     public static function normalizePath(string $path): string
     {
+        /** @var string */
         return array_reduce(explode('/', $path), function ($a, $b) {
             if ($a === null) {
                 $a = "/";
             }
+
             if ($b === "" || $b === ".") {
                 return $a;
             }
+
             if ($b === "..") {
-                return dirname($a);
+                return dirname($a); //@phpstan-ignore-line
             }
 
-            return preg_replace("/\/+/", "/", "$a/$b");
+            return preg_replace("/\/+/", "/", "$a/$b"); //@phpstan-ignore-line
         });
     }
 
