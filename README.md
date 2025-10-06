@@ -15,10 +15,10 @@ Main features:
 - Handling of CSR certification requests
 - Generating QR codes
 
-|  KSEF Version  | Branch Version |
-|:--------------:|:--------------:|
-|       2.0      |      main      |
-|       1.0      |       1.x      |
+|  KSEF Version  | Branch Version | Release Version |
+|:--------------:|:--------------:|:---------------:|
+|       2.0      |      main      |      ^0.3       |
+|       1.0      |       1.x      |      0.2.*      |
 
 ## Table of Contents
 
