@@ -18,6 +18,15 @@ return \Rector\Config\RectorConfig::configure()
         \Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector::class,
         \Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector::class,
         \Rector\Carbon\Rector\New_\DateTimeInstanceToCarbonRector::class,
+        \Rector\Php84\Rector\MethodCall\NewMethodCallWithoutParenthesesRector::class => [
+            __DIR__ . '/tests/Unit/*'
+        ],
+        \Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector::class => [
+            __DIR__ . '/src/Actions/ConvertEcdsaDerToRaw/ConvertEcdsaDerToRawHandler.php'
+        ],
+        \Rector\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector::class => [
+            __DIR__ . '/src/Actions/ConvertEcdsaDerToRaw/ConvertEcdsaDerToRawHandler.php'
+        ]
     ])
     ->withComposerBased(phpunit: true)
     ->withImportNames(removeUnusedImports: true)

@@ -41,6 +41,7 @@ final readonly class ConvertEcdsaDerToRawHandler extends AbstractHandler
         if ($data[$offset++] != 0x02) {
             throw new InvalidArgumentException("Invalid DER: expected INTEGER (r)");
         }
+
         $rLen = $data[$offset++];
         $r = '';
         for ($i = 0; $i < $rLen; $i++) {
@@ -51,6 +52,7 @@ final readonly class ConvertEcdsaDerToRawHandler extends AbstractHandler
         if ($data[$offset++] != 0x02) {
             throw new InvalidArgumentException("Invalid DER: expected INTEGER (s)");
         }
+
         $sLen = $data[$offset++];
         $s = '';
         for ($i = 0; $i < $sLen; $i++) {
