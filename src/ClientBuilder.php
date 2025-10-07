@@ -22,6 +22,7 @@ use N1ebieski\KSEFClient\Requests\Auth\KsefToken\KsefTokenRequest;
 use N1ebieski\KSEFClient\Requests\Auth\Status\StatusRequest;
 use N1ebieski\KSEFClient\Requests\Auth\XadesSignature\XadesSignatureRequest;
 use N1ebieski\KSEFClient\Resources\ClientResource;
+use N1ebieski\KSEFClient\Support\Optional;
 use N1ebieski\KSEFClient\Support\Utility;
 use N1ebieski\KSEFClient\ValueObjects\AccessToken;
 use N1ebieski\KSEFClient\ValueObjects\ApiUrl;
@@ -68,11 +69,14 @@ final class ClientBuilder
 
     private ?EncryptionKey $encryptionKey = null;
 
+    private Optional | bool $verifyCertificateChain;
+
     public function __construct()
     {
         $this->httpClient = Psr18ClientDiscovery::find();
         $this->logger = LoggerFactory::make();
         $this->apiUrl = $this->mode->getApiUrl();
+        $this->verifyCertificateChain = new Optional();
     }
 
     public function withMode(Mode | string $mode): self
@@ -200,6 +204,13 @@ final class ClientBuilder
         return $this;
     }
 
+    public function withVerifyCertificateChain(bool $verifyCertificateChain): self
+    {
+        $this->verifyCertificateChain = $verifyCertificateChain;
+
+        return $this;
+    }
+
     /**
      * @param null|LogLevel::* $level
      */
@@ -304,7 +315,8 @@ final class ClientBuilder
                     challenge: Challenge::from($challengeResponse->challenge),
                     contextIdentifierGroup: ContextIdentifierGroup::fromIdentifier($this->identifier),
                     subjectIdentifierType: SubjectIdentifierType::CertificateSubject
-                )
+                ),
+                verifyCertificateChain: $this->verifyCertificateChain
             )
         );
     }
