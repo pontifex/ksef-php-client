@@ -9,6 +9,7 @@ use Composer\Semver\VersionParser as Version;
 use PsrDiscovery\Collections\CandidatesCollection;
 use PsrDiscovery\Entities\CandidateEntity;
 use PsrDiscovery\Exceptions\SupportPackageNotFoundException;
+use PsrDiscovery\Implementations\Psr3\Logs;
 use Throwable;
 
 /**
@@ -29,9 +30,12 @@ final class Discover
      */
     private static array $extendedCandidates = [];
 
+    /**
+     * @return array<CandidateEntity>
+     */
     public static function logs(): array
     {
-        $implementationsPackage = '\PsrDiscovery\Implementations\Psr3\Logs';
+        $implementationsPackage = Logs::class;
 
         if ( ! class_exists($implementationsPackage)) {
             throw new SupportPackageNotFoundException('PSR-3 Logger', 'psr-discovery/log-implementations');
