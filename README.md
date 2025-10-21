@@ -958,7 +958,9 @@ file_put_contents(Utility::basePath('config/certificates/ksef-certificate.p12'),
         <h3>Integration with a frontend application using certificate-based authentication</h3>
     </summary>
 
-    [https://github.com/N1ebieski/ksef-app-example.test](https://github.com/N1ebieski/ksef-app-example.test)
+    <a href="https://github.com/N1ebieski/ksef-app-example.test" target="_blank" rel="noopener noreferrer">
+        https://github.com/N1ebieski/ksef-app-example.test
+    </a>
 </details>
 
 <details>
