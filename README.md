@@ -85,6 +85,7 @@ Main features:
             - [Testdata Person Remove](#testdata-person-remove)
 - [Examples](#examples)
     - [Generate a KSEF certificate and convert to .p12 file](#generate-a-ksef-certificate-and-convert-to-p12-file)
+    - [Integration with a frontend application using certificate-based authentication](#integration-with-a-frontend-application-using-certificate-based-authentication)
     - [Send an invoice, check for UPO and generate QR code](#send-an-invoice-check-for-upo-and-generate-qr-code)
     - [Batch async send multiple invoices and check for UPO](#batch-async-send-multiple-invoices-and-check-for-upo)
     - [Create an offline invoice and generate both QR codes](#create-an-offline-invoice-and-generate-both-qr-codes)
@@ -950,6 +951,14 @@ $certificateToPkcs12 = (new ConvertCertificateToPkcs12Handler())->handle(
 
 file_put_contents(Utility::basePath('config/certificates/ksef-certificate.p12'), $certificateToPkcs12);
 ```
+</details>
+
+<details>
+    <summary>
+        <h3>Integration with a frontend application using certificate-based authentication</h3>
+    </summary>
+
+    https://github.com/N1ebieski/ksef-app-example.test
 </details>
 
 <details>
