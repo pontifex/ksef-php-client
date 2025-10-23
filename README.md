@@ -1389,7 +1389,7 @@ foreach ($statusResponse->package->parts as $part) {
     $zipContents .= $contents;
 }
 
-file_put_contents(Utility::basePath("var/zip/invoices.zip"), $contents);
+file_put_contents(Utility::basePath("var/zip/invoices.zip"), $zipContents);
 
 var_dump($statusResponse);
 ```
