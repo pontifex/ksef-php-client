@@ -1219,7 +1219,7 @@ $initResponse = $client->invoices()->exports()->init([
 
 $statusResponse = Utility::retry(function () use ($client, $initResponse) {
     $statusResponse = $client->invoices()->exports()->status([
-        'operationReferenceNumber' => $initResponse->operationReferenceNumber
+        'referenceNumber' => $initResponse->referenceNumber
     ])->object();
 
     if ($statusResponse->status->code === 200) {
@@ -1236,6 +1236,8 @@ $statusResponse = Utility::retry(function () use ($client, $initResponse) {
 
 $decryptDocumentHandler = new DecryptDocumentHandler();
 
+$zipContents = '';
+
 // Downloading...
 foreach ($statusResponse->package->parts as $part) {
     $contents = file_get_contents($part->url);
@@ -1245,10 +1247,12 @@ foreach ($statusResponse->package->parts as $part) {
         encryptionKey: $encryptionKey
     ));
 
-    $name = rtrim($part->partName, '.aes');
-
-    file_put_contents(Utility::basePath("var/zip/{$name}"), $contents);
+    $zipContents .= $contents;
 }
+
+file_put_contents(Utility::basePath("var/zip/invoices.zip"), $contents);
+
+var_dump($statusResponse);
 ```
 </details>
 
