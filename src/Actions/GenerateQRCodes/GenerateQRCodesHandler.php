@@ -67,7 +67,7 @@ final class GenerateQRCodesHandler extends AbstractHandler
             $signature = '';
 
             $sign = openssl_sign(
-                ltrim($certificateLink, 'https://'),
+                hash('sha256', ltrim($certificateLink, 'https://'), true),
                 $signature,
                 $action->certificate->privateKey,
                 $action->certificate->getAlgorithm()
