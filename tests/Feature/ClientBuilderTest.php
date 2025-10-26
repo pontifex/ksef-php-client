@@ -20,7 +20,7 @@ use N1ebieski\KSEFClient\ValueObjects\RefreshToken;
 /**
  * @return array<string, array<PrivateKeyType>>
  */
-dataset('privateKeyTypeProvider', fn(): array => [
+dataset('privateKeyTypeProvider', fn (): array => [
     'RSA' => [PrivateKeyType::RSA],
     'EC' => [PrivateKeyType::EC],
 ]);
