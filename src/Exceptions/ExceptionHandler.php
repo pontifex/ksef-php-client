@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace N1ebieski\KSEFClient\Exceptions;
 
+use N1ebieski\KSEFClient\Contracts\ContextInterface;
 use N1ebieski\KSEFClient\Contracts\Exception\ExceptionHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 final class ExceptionHandler implements ExceptionHandlerInterface
 {
@@ -14,12 +16,19 @@ final class ExceptionHandler implements ExceptionHandlerInterface
     ) {
     }
 
-    public function handle(AbstractException $exception): void
+    public function handle(Throwable $throwable): Throwable
     {
         if ($this->logger instanceof LoggerInterface) {
-            $this->logger->error($exception->getMessage(), $exception->toArray());
+            $message = $throwable->getCode() > 0
+                ? "{$throwable->getCode()} {$throwable->getMessage()}"
+                : $throwable->getMessage();
+
+            $context = $throwable instanceof ContextInterface
+                ? (array) $throwable->context : [];
+
+            $this->logger->error($message, $context);
         }
 
-        throw $exception;
+        return $throwable;
     }
 }
