@@ -35,7 +35,7 @@ final class Utility
      */
     public static function basePath(string $path = ''): string
     {
-        $basePath = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR;
+        $basePath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
 
         return Utility::normalizePath($basePath . $path);
     }
@@ -49,7 +49,11 @@ final class Utility
         $absolutes = [];
 
         foreach ($parts as $part) {
-            if ($part === '' || $part === '.') {
+            if ($part === '') {
+                continue;
+            }
+
+            if ($part === '.') {
                 continue;
             }
 
