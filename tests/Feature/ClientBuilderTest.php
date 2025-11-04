@@ -98,18 +98,18 @@ test('auto authorization via KSEF certificate .p12', function (PrivateKeyType $p
     $certificateToPkcs12 = (new ConvertCertificateToPkcs12Handler())->handle(
         new ConvertCertificateToPkcs12Action(
             certificate: new Certificate($certificateToPem, [], $csr->privateKey), //@phpstan-ignore-line
-            passphrase: $_ENV['KSEF_AUTH_CERTIFICATE_PASSPHRASE']
+            passphrase: $_ENV['KSEF_AUTH_CERTIFICATE_PASSPHRASE_1']
         )
     );
 
-    file_put_contents(Utility::basePath($_ENV['KSEF_AUTH_CERTIFICATE_PATH']), $certificateToPkcs12);
+    file_put_contents(Utility::basePath($_ENV['KSEF_AUTH_CERTIFICATE_PATH_1']), $certificateToPkcs12);
 
     $this->revokeCurrentSession($client);
 
     $client = (new ClientBuilder())
         ->withMode(Mode::Test)
-        ->withIdentifier($_ENV['NIP'])
-        ->withCertificatePath(Utility::basePath($_ENV['KSEF_AUTH_CERTIFICATE_PATH']), $_ENV['KSEF_AUTH_CERTIFICATE_PASSPHRASE'])
+        ->withIdentifier($_ENV['NIP_1'])
+        ->withCertificatePath(Utility::basePath($_ENV['KSEF_AUTH_CERTIFICATE_PATH_1']), $_ENV['KSEF_AUTH_CERTIFICATE_PASSPHRASE_1'])
         ->build();
 
     $accessToken = $client->getAccessToken();
@@ -150,7 +150,7 @@ test('auto authorization via KSEF Token', function (): void {
 
     $client = (new ClientBuilder())
         ->withMode(Mode::Test)
-        ->withIdentifier($_ENV['NIP'])
+        ->withIdentifier($_ENV['NIP_1'])
         ->withKsefToken($response->token)
         ->build();
 

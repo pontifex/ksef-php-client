@@ -8,8 +8,8 @@ use N1ebieski\KSEFClient\Contracts\Exception\ExceptionHandlerInterface;
 use N1ebieski\KSEFClient\Contracts\HttpClient\HttpClientInterface;
 use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
 use N1ebieski\KSEFClient\Contracts\Resources\Permissions\Common\CommonResourceInterface;
-use N1ebieski\KSEFClient\Requests\Permissions\Common\Remove\RemoveHandler;
-use N1ebieski\KSEFClient\Requests\Permissions\Common\Remove\RemoveRequest;
+use N1ebieski\KSEFClient\Requests\Permissions\Common\Revoke\RevokeHandler;
+use N1ebieski\KSEFClient\Requests\Permissions\Common\Revoke\RevokeRequest;
 use N1ebieski\KSEFClient\Resources\AbstractResource;
 use Throwable;
 
@@ -21,14 +21,14 @@ final class CommonResource extends AbstractResource implements CommonResourceInt
     ) {
     }
 
-    public function remove(RemoveRequest | array $request): ResponseInterface
+    public function revoke(RevokeRequest | array $request): ResponseInterface
     {
         try {
-            if ($request instanceof RemoveRequest === false) {
-                $request = RemoveRequest::from($request);
+            if ($request instanceof RevokeRequest === false) {
+                $request = RevokeRequest::from($request);
             }
 
-            return (new RemoveHandler($this->client))->handle($request);
+            return (new RevokeHandler($this->client))->handle($request);
         } catch (Throwable $throwable) {
             throw $this->exceptionHandler->handle($throwable);
         }

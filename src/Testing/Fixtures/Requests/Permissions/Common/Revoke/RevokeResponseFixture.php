@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace N1ebieski\KSEFClient\Testing\Fixtures\Requests\Permissions\Common\Remove;
+namespace N1ebieski\KSEFClient\Testing\Fixtures\Requests\Permissions\Common\Revoke;
 
 use N1ebieski\KSEFClient\Testing\Fixtures\Requests\AbstractResponseFixture;
 
-final class RemoveResponseFixture extends AbstractResponseFixture
+final class RevokeResponseFixture extends AbstractResponseFixture
 {
     public int $statusCode = 202;
 

@@ -6,7 +6,7 @@ namespace N1ebieski\KSEFClient\Contracts\Resources\Permissions\Authorizations;
 
 use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
 use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Grants\GrantsRequest;
-use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Remove\RemoveRequest;
+use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Revoke\RevokeRequest;
 
 interface AuthorizationsResourceInterface
 {
@@ -16,7 +16,7 @@ interface AuthorizationsResourceInterface
     public function grants(GrantsRequest | array $request): ResponseInterface;
 
     /**
-     * @param RemoveRequest|array<string, mixed> $request
+     * @param RevokeRequest|array<string, mixed> $request
      */
-    public function remove(RemoveRequest | array $request): ResponseInterface;
+    public function revoke(RevokeRequest | array $request): ResponseInterface;
 }

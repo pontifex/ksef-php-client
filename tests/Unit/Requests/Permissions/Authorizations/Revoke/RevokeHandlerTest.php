@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-use N1ebieski\KSEFClient\Requests\Permissions\Common\Remove\RemoveRequest;
+use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Revoke\RevokeRequest;
 use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Error\ErrorResponseFixture;
-use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Permissions\Common\Remove\RemoveRequestFixture;
-use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Permissions\Common\Remove\RemoveResponseFixture;
+use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Permissions\Authorizations\Revoke\RevokeRequestFixture;
+use N1ebieski\KSEFClient\Testing\Fixtures\Requests\Permissions\Authorizations\Revoke\RevokeResponseFixture;
 use N1ebieski\KSEFClient\Tests\Unit\AbstractTestCase;
 
 /** @var AbstractTestCase $this */
 
 /**
- * @return array<string, array{RemoveRequestFixture, RemoveResponseFixture}>
+ * @return array<string, array{RevokeRequestFixture, RevokeResponseFixture}>
  */
 dataset('validResponseProvider', function (): array {
     $requests = [
-        new RemoveRequestFixture(),
+        new RevokeRequestFixture(),
     ];
 
     $responses = [
-        new RemoveResponseFixture(),
+        new RevokeResponseFixture(),
     ];
 
     $combinations = [];
@@ -30,19 +30,19 @@ dataset('validResponseProvider', function (): array {
         }
     }
 
-    /** @var array<string, array{RemoveRequestFixture, RemoveResponseFixture}> */
+    /** @var array<string, array{RevokeRequestFixture, RevokeResponseFixture}> */
     return $combinations;
 });
 
-test('valid response', function (RemoveRequestFixture $requestFixture, RemoveResponseFixture $responseFixture): void {
+test('valid response', function (RevokeRequestFixture $requestFixture, RevokeResponseFixture $responseFixture): void {
     /** @var AbstractTestCase $this */
     $clientStub = $this->createClientStub($responseFixture);
 
-    $request = RemoveRequest::from($requestFixture->data);
+    $request = RevokeRequest::from($requestFixture->data);
 
     expect($request)->toBeFixture($requestFixture->data);
 
-    $response = $clientStub->permissions()->common()->remove($requestFixture->data)->object();
+    $response = $clientStub->permissions()->authorizations()->revoke($requestFixture->data)->object();
 
     expect($response)->toBeFixture($responseFixture->data);
 })->with('validResponseProvider');
@@ -52,10 +52,10 @@ test('invalid response', function (): void {
 
     expect(function () use ($responseFixture): void {
         /** @var AbstractTestCase $this */
-        $requestFixture = new RemoveRequestFixture();
+        $requestFixture = new RevokeRequestFixture();
 
         $clientStub = $this->createClientStub($responseFixture);
 
-        $clientStub->permissions()->common()->remove($requestFixture->data);
+        $clientStub->permissions()->authorizations()->revoke($requestFixture->data);
     })->toBeExceptionFixture($responseFixture->data);
 });

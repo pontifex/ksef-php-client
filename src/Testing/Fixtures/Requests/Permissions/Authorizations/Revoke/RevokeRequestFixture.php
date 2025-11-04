@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace N1ebieski\KSEFClient\Testing\Fixtures\Requests\Permissions\Common\Remove;
+namespace N1ebieski\KSEFClient\Testing\Fixtures\Requests\Permissions\Authorizations\Revoke;
 
 use N1ebieski\KSEFClient\Testing\Fixtures\Requests\AbstractRequestFixture;
 
-final class RemoveRequestFixture extends AbstractRequestFixture
+final class RevokeRequestFixture extends AbstractRequestFixture
 {
     /**
      * @var array<string, mixed>

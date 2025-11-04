@@ -25,14 +25,14 @@ test('send an invoice, check for UPO and generate QR code', function (): void {
 
     $encryptionKey = EncryptionKeyFactory::makeRandom();
 
-    $client = $this->createClient($encryptionKey);
+    $client = $this->createClient(encryptionKey: $encryptionKey);
 
     $openResponse = $client->sessions()->online()->open([
         'formCode' => 'FA (3)',
     ])->object();
 
     $fakturaFixture = (new FakturaSprzedazyTowaruFixture())
-        ->withNip($_ENV['NIP'])
+        ->withNip($_ENV['NIP_1'])
         ->withTodayDate()
         ->withRandomInvoiceNumber();
 

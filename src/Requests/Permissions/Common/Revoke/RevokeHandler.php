@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Remove;
+namespace N1ebieski\KSEFClient\Requests\Permissions\Common\Revoke;
 
 use N1ebieski\KSEFClient\Contracts\HttpClient\HttpClientInterface;
 use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
@@ -11,19 +11,19 @@ use N1ebieski\KSEFClient\Requests\AbstractHandler;
 use N1ebieski\KSEFClient\ValueObjects\HttpClient\Method;
 use N1ebieski\KSEFClient\ValueObjects\HttpClient\Uri;
 
-final class RemoveHandler extends AbstractHandler
+final class RevokeHandler extends AbstractHandler
 {
     public function __construct(
         private readonly HttpClientInterface $client,
     ) {
     }
 
-    public function handle(RemoveRequest $request): ResponseInterface
+    public function handle(RevokeRequest $request): ResponseInterface
     {
         return $this->client->sendRequest(new Request(
             method: Method::Delete,
             uri: Uri::from(
-                sprintf('permissions/authorizations/grants/%s', $request->permissionId->value)
+                sprintf('permissions/common/grants/%s', $request->permissionId->value)
             )
         ));
     }

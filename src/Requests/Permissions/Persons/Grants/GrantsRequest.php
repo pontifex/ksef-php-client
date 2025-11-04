@@ -9,7 +9,7 @@ use N1ebieski\KSEFClient\DTOs\Requests\Permissions\SubjectIdentifierFingerprintG
 use N1ebieski\KSEFClient\DTOs\Requests\Permissions\SubjectIdentifierNipGroup;
 use N1ebieski\KSEFClient\DTOs\Requests\Permissions\SubjectIdentifierPeselGroup;
 use N1ebieski\KSEFClient\Requests\AbstractRequest;
-use N1ebieski\KSEFClient\ValueObjects\Requests\Permissions\Description;
+use N1ebieski\KSEFClient\ValueObjects\Requests\Description;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Permissions\Persons\PersonPermissionType;
 
 final class GrantsRequest extends AbstractRequest implements BodyInterface

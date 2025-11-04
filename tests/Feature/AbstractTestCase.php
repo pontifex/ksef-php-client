@@ -13,13 +13,20 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractTestCase extends TestCase
 {
-    public function createClient(?EncryptionKey $encryptionKey = null): ClientResourceInterface
-    {
+    public function createClient(
+        ?string $identifier = null,
+        ?string $certificatePath = null,
+        ?string $certificatePassphrase = null,
+        ?EncryptionKey $encryptionKey = null
+    ): ClientResourceInterface {
         /** @var array<string, string> $_ENV */
         $client = (new ClientBuilder())
             ->withMode(Mode::Test)
-            ->withIdentifier($_ENV['NIP'])
-            ->withCertificatePath(Utility::basePath($_ENV['CERTIFICATE_PATH']), $_ENV['CERTIFICATE_PASSPHRASE']);
+            ->withIdentifier($identifier ?? $_ENV['NIP_1'])
+            ->withCertificatePath(
+                Utility::basePath($certificatePath ?? $_ENV['CERTIFICATE_PATH_1']),
+                $certificatePassphrase ?? $_ENV['CERTIFICATE_PASSPHRASE_1']
+            );
 
         if ($encryptionKey !== null) {
             $client = $client->withEncryptionKey($encryptionKey);

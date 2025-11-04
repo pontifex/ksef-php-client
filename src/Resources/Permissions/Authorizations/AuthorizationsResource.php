@@ -10,8 +10,8 @@ use N1ebieski\KSEFClient\Contracts\HttpClient\ResponseInterface;
 use N1ebieski\KSEFClient\Contracts\Resources\Permissions\Authorizations\AuthorizationsResourceInterface;
 use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Grants\GrantsHandler;
 use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Grants\GrantsRequest;
-use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Remove\RemoveHandler;
-use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Remove\RemoveRequest;
+use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Revoke\RevokeHandler;
+use N1ebieski\KSEFClient\Requests\Permissions\Authorizations\Revoke\RevokeRequest;
 use N1ebieski\KSEFClient\Resources\AbstractResource;
 use Throwable;
 
@@ -36,14 +36,14 @@ final class AuthorizationsResource extends AbstractResource implements Authoriza
         }
     }
 
-    public function remove(RemoveRequest | array $request): ResponseInterface
+    public function revoke(RevokeRequest | array $request): ResponseInterface
     {
         try {
-            if ($request instanceof RemoveRequest === false) {
-                $request = RemoveRequest::from($request);
+            if ($request instanceof RevokeRequest === false) {
+                $request = RevokeRequest::from($request);
             }
 
-            return (new RemoveHandler($this->client))->handle($request);
+            return (new RevokeHandler($this->client))->handle($request);
         } catch (Throwable $throwable) {
             throw $this->exceptionHandler->handle($throwable);
         }

@@ -7,7 +7,7 @@ namespace N1ebieski\KSEFClient\Requests\Permissions\EuEntities\Grants;
 use N1ebieski\KSEFClient\Contracts\BodyInterface;
 use N1ebieski\KSEFClient\DTOs\Requests\Permissions\SubjectIdentifierFingerprintGroup;
 use N1ebieski\KSEFClient\Requests\AbstractRequest;
-use N1ebieski\KSEFClient\ValueObjects\Requests\Permissions\Description;
+use N1ebieski\KSEFClient\ValueObjects\Requests\Description;
 use N1ebieski\KSEFClient\ValueObjects\Requests\Permissions\EuEntities\EuEntityPermissionType;
 
 final class GrantsRequest extends AbstractRequest implements BodyInterface
