@@ -64,5 +64,9 @@ jobs:
         if: matrix.php == '8.1'
         run: ./vendor/bin/phpstan analyse --error-format=github 
 
-      - name: Run Pest
-        run: ./vendor/bin/pest --parallel --ci
+      - name: Run Pest Unit tests
+        run: ./vendor/bin/pest tests/Unit --parallel --ci
+
+      - name: Run Pest Feature tests
+        if: matrix.php == '8.1'
+        run: ./vendor/bin/pest tests/Feature --parallel --ci
